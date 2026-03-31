@@ -1094,6 +1094,196 @@ const TYPE_COLOR={
   Normal:"#a8a878",Fairy:"#f0a0f0",
 };
 
+// ── Tipos automáticos por espécie ────────────────────────────────
+const POKEMON_TYPES={
+  // Geração 1
+  Bulbasaur:["Grass","Poison"],Ivysaur:["Grass","Poison"],Venusaur:["Grass","Poison"],
+  Charmander:["Fire"],Charmeleon:["Fire"],Charizard:["Fire","Flying"],
+  Squirtle:["Water"],Wartortle:["Water"],Blastoise:["Water"],
+  Caterpie:["Bug"],Metapod:["Bug"],Butterfree:["Bug","Flying"],
+  Weedle:["Bug","Poison"],Kakuna:["Bug","Poison"],Beedrill:["Bug","Poison"],
+  Pidgey:["Normal","Flying"],Pidgeot:["Normal","Flying"],
+  Rattata:["Normal"],Raticate:["Normal"],
+  Spearow:["Normal","Flying"],Fearow:["Normal","Flying"],
+  Ekans:["Poison"],Arbok:["Poison"],
+  Pikachu:["Electric"],Raichu:["Electric"],Pichu:["Electric"],
+  Sandshrew:["Ground"],Sandslash:["Ground"],
+  "Nidoran♀":["Poison"],"Nidoran♂":["Poison"],
+  Clefairy:["Normal"],Clefable:["Normal"],Cleffa:["Normal"],
+  Jigglypuff:["Normal"],Wigglytuff:["Normal"],Igglybuff:["Normal"],
+  Zubat:["Poison","Flying"],Golbat:["Poison","Flying"],
+  Oddish:["Grass","Poison"],Gloom:["Grass","Poison"],Vileplume:["Grass","Poison"],
+  Paras:["Bug","Grass"],Parasect:["Bug","Grass"],
+  Venonat:["Bug","Poison"],Venomoth:["Bug","Poison"],
+  Meowth:["Normal"],Persian:["Normal"],
+  Psyduck:["Water"],Golduck:["Water"],
+  Mankey:["Fighting"],Primeape:["Fighting"],
+  Growlithe:["Fire"],Arcanine:["Fire"],
+  Poliwag:["Water"],Poliwhirl:["Water"],Poliwrath:["Water","Fighting"],Politoed:["Water"],
+  Machop:["Fighting"],Machamp:["Fighting"],
+  Geodude:["Rock","Ground"],Graveler:["Rock","Ground"],Golem:["Rock","Ground"],
+  Ponyta:["Fire"],Rapidash:["Fire"],
+  Slowpoke:["Water","Psychic"],Slowbro:["Water","Psychic"],Slowking:["Water","Psychic"],
+  Magnemite:["Electric","Steel"],Magneton:["Electric","Steel"],
+  Gastly:["Ghost","Poison"],Haunter:["Ghost","Poison"],Gengar:["Ghost","Poison"],
+  Onix:["Rock","Ground"],Steelix:["Steel","Ground"],
+  Krabby:["Water"],Kingler:["Water"],
+  Voltorb:["Electric"],Electrode:["Electric"],
+  Horsea:["Water"],Seadra:["Water"],Kingdra:["Water","Dragon"],
+  Goldeen:["Water"],Seaking:["Water"],
+  Staryu:["Water"],Starmie:["Water","Psychic"],
+  "Mr. Mime":["Psychic"],Jynx:["Ice","Psychic"],
+  Electabuzz:["Electric"],Elekid:["Electric"],
+  Magmar:["Fire"],Magby:["Fire"],
+  Scyther:["Bug","Flying"],Scizor:["Bug","Steel"],
+  Gyarados:["Water","Flying"],Magikarp:["Water"],
+  Lapras:["Water","Ice"],
+  Eevee:["Normal"],Vaporeon:["Water"],Jolteon:["Electric"],Flareon:["Fire"],
+  Espeon:["Psychic"],Umbreon:["Dark"],Leafeon:["Grass"],Glaceon:["Ice"],
+  Porygon:["Normal"],"Porygon-Z":["Normal"],
+  Snorlax:["Normal"],Munchlax:["Normal"],
+  Dratini:["Dragon"],Dragonair:["Dragon"],Dragonite:["Dragon","Flying"],
+  Mewtwo:["Psychic"],Mew:["Psychic"],
+  // Geração 2
+  Chikorita:["Grass"],Bayleef:["Grass"],Meganium:["Grass"],
+  Cyndaquil:["Fire"],Quilava:["Fire"],Typhlosion:["Fire"],
+  Totodile:["Water"],Croconaw:["Water"],Feraligatr:["Water"],
+  Sentret:["Normal"],Furret:["Normal"],
+  Hoothoot:["Normal","Flying"],Noctowl:["Normal","Flying"],
+  Bellsprout:["Grass","Poison"],Weepinbell:["Grass","Poison"],Victreebel:["Grass","Poison"],
+  Tentacool:["Water","Poison"],Tentacruel:["Water","Poison"],
+  Sudowoodo:["Rock"],Bonsly:["Rock"],
+  Mareep:["Electric"],Flaaffy:["Electric"],Ampharos:["Electric"],
+  Marill:["Water"],Azumarill:["Water"],Azurill:["Normal"],
+  Togepi:["Normal"],Togetic:["Normal","Flying"],Togekiss:["Normal","Flying"],
+  Sunkern:["Grass"],Sunflora:["Grass"],
+  Yanma:["Bug","Flying"],
+  Wooper:["Water","Ground"],Quagsire:["Water","Ground"],
+  Murkrow:["Dark","Flying"],Honchkrow:["Dark","Flying"],
+  Misdreavus:["Ghost"],Mismagius:["Ghost"],
+  Wobbuffet:["Psychic"],
+  Dunsparce:["Normal"],
+  Snubbull:["Normal"],Granbull:["Normal"],
+  Heracross:["Bug","Fighting"],
+  Sneasel:["Dark","Ice"],Weavile:["Dark","Ice"],
+  Teddiursa:["Normal"],Ursaring:["Normal"],
+  Slugma:["Fire"],Magcargo:["Fire","Rock"],
+  Swinub:["Ice","Ground"],Piloswine:["Ice","Ground"],Mamoswine:["Ice","Ground"],
+  Corsola:["Water","Rock"],
+  Delibird:["Ice","Flying"],
+  Houndour:["Dark","Fire"],Houndoom:["Dark","Fire"],
+  Phanpy:["Ground"],Donphan:["Ground"],
+  Stantler:["Normal"],
+  Smeargle:["Normal"],
+  Tyrogue:["Fighting"],Hitmontop:["Fighting"],
+  Smoochum:["Ice","Psychic"],
+  Miltank:["Normal"],
+  Blissey:["Normal"],Chansey:["Normal"],Happiny:["Normal"],
+  Larvitar:["Rock","Ground"],Pupitar:["Rock","Ground"],Tyranitar:["Rock","Dark"],
+  Lugia:["Psychic","Flying"],"Ho-Oh":["Fire","Flying"],Celebi:["Psychic","Grass"],
+  // Geração 3
+  Treecko:["Grass"],Grovyle:["Grass"],Sceptile:["Grass"],
+  Torchic:["Fire"],Combusken:["Fire","Fighting"],Blaziken:["Fire","Fighting"],
+  Mudkip:["Water"],Marshtomp:["Water","Ground"],Swampert:["Water","Ground"],
+  Poochyena:["Dark"],Mightyena:["Dark"],
+  Zigzagoon:["Normal"],Linoone:["Normal"],
+  Wurmple:["Bug"],Silcoon:["Bug"],Beautifly:["Bug","Flying"],Cascoon:["Bug"],Dustox:["Bug","Poison"],
+  Lotad:["Water","Grass"],Lombre:["Water","Grass"],Ludicolo:["Water","Grass"],
+  Seedot:["Grass"],Nuzleaf:["Grass","Dark"],Shiftry:["Grass","Dark"],
+  Taillow:["Normal","Flying"],Swellow:["Normal","Flying"],
+  Wingull:["Water","Flying"],Pelipper:["Water","Flying"],
+  Ralts:["Psychic"],Kirlia:["Psychic"],Gardevoir:["Psychic"],Gallade:["Psychic","Fighting"],
+  Surskit:["Bug","Water"],Masquerain:["Bug","Flying"],
+  Shroomish:["Grass"],Breloom:["Grass","Fighting"],
+  Slakoth:["Normal"],Vigoroth:["Normal"],Slaking:["Normal"],
+  Nincada:["Bug","Ground"],Ninjask:["Bug","Flying"],Shedinja:["Bug","Ghost"],
+  Whismur:["Normal"],Loudred:["Normal"],Exploud:["Normal"],
+  Makuhita:["Fighting"],Hariyama:["Fighting"],
+  Azurill:["Normal"],
+  Nosepass:["Rock"],
+  Skitty:["Normal"],Delcatty:["Normal"],
+  Sableye:["Dark","Ghost"],
+  Mawile:["Steel"],
+  Aron:["Steel","Rock"],Lairon:["Steel","Rock"],Aggron:["Steel","Rock"],
+  Meditite:["Fighting","Psychic"],Medicham:["Fighting","Psychic"],
+  Electrike:["Electric"],Manectric:["Electric"],
+  Plusle:["Electric"],Minun:["Electric"],
+  Roselia:["Grass","Poison"],Roserade:["Grass","Poison"],Budew:["Grass","Poison"],
+  Gulpin:["Poison"],Swalot:["Poison"],
+  Carvanha:["Water","Dark"],Sharpedo:["Water","Dark"],
+  Wailmer:["Water"],Wailord:["Water"],
+  Numel:["Fire","Ground"],Camerupt:["Fire","Ground"],
+  Torkoal:["Fire"],
+  Spinda:["Normal"],
+  Trapinch:["Ground"],Vibrava:["Ground","Dragon"],Flygon:["Ground","Dragon"],
+  Cacnea:["Grass"],Cacturne:["Grass","Dark"],
+  Swablu:["Normal","Flying"],Altaria:["Dragon","Flying"],
+  Zangoose:["Normal"],Seviper:["Poison"],
+  Lunatone:["Rock","Psychic"],Solrock:["Rock","Psychic"],
+  Barboach:["Water","Ground"],Whiscash:["Water","Ground"],
+  Corphish:["Water"],Crawdaunt:["Water","Dark"],
+  Baltoy:["Ground","Psychic"],Claydol:["Ground","Psychic"],
+  Feebas:["Water"],Milotic:["Water"],
+  Castform:["Normal"],
+  Kecleon:["Normal"],
+  Shuppet:["Ghost"],Banette:["Ghost"],
+  Duskull:["Ghost"],Dusclops:["Ghost"],Dusknoir:["Ghost"],
+  Tropius:["Grass","Flying"],
+  Absol:["Dark"],
+  Snorunt:["Ice"],Glalie:["Ice"],Froslass:["Ice","Ghost"],
+  Spheal:["Ice","Water"],Sealeo:["Ice","Water"],Walrein:["Ice","Water"],
+  Clamperl:["Water"],Huntail:["Water"],Gorebyss:["Water"],
+  Relicanth:["Water","Rock"],
+  Luvdisc:["Water"],
+  Bagon:["Dragon"],Shelgon:["Dragon"],Salamence:["Dragon","Flying"],
+  Beldum:["Steel","Psychic"],Metang:["Steel","Psychic"],Metagross:["Steel","Psychic"],
+  Jirachi:["Steel","Psychic"],
+  // Geração 4
+  Turtwig:["Grass"],Grotle:["Grass"],Torterra:["Grass","Ground"],
+  Chimchar:["Fire"],Monferno:["Fire","Fighting"],Infernape:["Fire","Fighting"],
+  Piplup:["Water"],Prinplup:["Water"],Empoleon:["Water","Steel"],
+  Starly:["Normal","Flying"],Staravia:["Normal","Flying"],Staraptor:["Normal","Flying"],
+  Bidoof:["Normal"],Bibarel:["Normal","Water"],
+  Kricketot:["Bug"],Kricketune:["Bug"],
+  Shinx:["Electric"],Luxio:["Electric"],Luxray:["Electric"],
+  Cranidos:["Rock"],Rampardos:["Rock"],
+  Shieldon:["Rock","Steel"],Bastiodon:["Rock","Steel"],
+  Burmy:["Bug"],Wormadam:["Bug","Grass"],Mothim:["Bug","Flying"],
+  Combee:["Bug","Flying"],Vespiquen:["Bug","Flying"],
+  Pachirisu:["Electric"],
+  Buizel:["Water"],Floatzel:["Water"],
+  Cherubi:["Grass"],Cherrim:["Grass"],
+  Shellos:["Water"],Gastrodon:["Water","Ground"],
+  Ambipom:["Normal"],Aipom:["Normal"],
+  Drifloon:["Ghost","Flying"],Drifblim:["Ghost","Flying"],
+  Buneary:["Normal"],Lopunny:["Normal"],
+  Glameow:["Normal"],Purugly:["Normal"],
+  Chingling:["Psychic"],Chimecho:["Psychic"],
+  Stunky:["Poison","Dark"],Skuntank:["Poison","Dark"],
+  Bronzor:["Steel","Psychic"],Bronzong:["Steel","Psychic"],
+  Chatot:["Normal","Flying"],
+  Spiritomb:["Ghost","Dark"],
+  Gible:["Dragon","Ground"],Gabite:["Dragon","Ground"],Garchomp:["Dragon","Ground"],
+  Riolu:["Fighting"],Lucario:["Fighting","Steel"],
+  Hippopotas:["Ground"],Hippowdon:["Ground"],
+  Skorupi:["Poison","Bug"],Drapion:["Poison","Dark"],
+  Croagunk:["Poison","Fighting"],Toxicroak:["Poison","Fighting"],
+  Carnivine:["Grass"],
+  Finneon:["Water"],Lumineon:["Water"],
+  Mantyke:["Water","Flying"],Mantine:["Water","Flying"],
+  Snover:["Grass","Ice"],Abomasnow:["Grass","Ice"],
+  Rotom:["Electric","Ghost"],
+  Uxie:["Psychic"],Mesprit:["Psychic"],Azelf:["Psychic"],
+  Dialga:["Steel","Dragon"],Palkia:["Water","Dragon"],
+  Giratina:["Ghost","Dragon"],
+  Cresselia:["Psychic"],
+  Darkrai:["Dark"],Shaymin:["Grass"],Arceus:["Normal"],
+};
+
+function getPokemonTypes(name){
+  return POKEMON_TYPES[name] || null;
+}
+
 // ── Todos os Pokémon do Pokéwalker (para autocomplete) ───────────
 const ALL_PKM_NAMES=[
   "Kangaskhan","Doduo","Nidoran♀","Nidoran♂","Pidgey","Sentret",
@@ -1286,9 +1476,24 @@ function SetupScreen({setup,setSetup,pw,avail,onStart,onStartWild,onStats}){
   const pkmTypes=[setup.type1,setup.type2].filter(Boolean).map(t=>t.trim());
   const hasAdv=!!(pkmTypes.length>0 && selRoute && selRoute.types.some(t=>pkmTypes.includes(t)));
   const [showSuggestions, setShowSuggestions] = React.useState(false);
+  const [autoDetected, setAutoDetected] = React.useState(false);
   const suggestions = setup.name.length>=2
     ? ALL_PKM_NAMES.filter(n=>n.toLowerCase().startsWith(setup.name.toLowerCase())).slice(0,6)
     : [];
+
+  // Auto-detect types when name changes
+  React.useEffect(()=>{
+    const types = getPokemonTypes(setup.name);
+    if(types){
+      setSetup(s=>({...s, type1:types[0]||"", type2:types[1]||""}));
+      setAutoDetected(true);
+    } else {
+      setAutoDetected(false);
+    }
+  },[setup.name]);
+
+  const ALL_TYPES = Object.keys(TYPE_COLOR);
+
   // EXP progress
   const lvl = parseInt(setup.level)||1;
   const exp = parseInt(setup.exp)||0;
@@ -1366,11 +1571,42 @@ function SetupScreen({setup,setSetup,pw,avail,onStart,onStartWild,onStats}){
       </div>
       {/* Tipos */}
       <div className="card" style={{padding:"16px",marginBottom:"14px"}}>
-        <div style={{fontSize:"11px",color:"var(--text3)",fontWeight:"800",letterSpacing:"1px",textTransform:"uppercase",marginBottom:"12px"}}>Tipos do Pokémon</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"10px",marginBottom:"10px"}}>
-          <input value={setup.type1} onChange={e=>f("type1",e.target.value)} placeholder="Tipo 1 (ex: Water)"/>
-          <input value={setup.type2} onChange={e=>f("type2",e.target.value)} placeholder="Tipo 2 (opcional)"/>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"12px"}}>
+          <div style={{fontSize:"11px",color:"var(--text3)",fontWeight:"800",letterSpacing:"1px",textTransform:"uppercase"}}>Tipos do Pokémon</div>
+          {autoDetected && (
+            <div style={{fontSize:"10px",color:"var(--green)",fontWeight:"800",background:"rgba(48,160,96,.12)",borderRadius:5,padding:"2px 8px"}}>✓ Auto-detectado</div>
+          )}
         </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"10px",marginBottom:"10px"}}>
+          <div>
+            <div style={{fontSize:"11px",color:"var(--text2)",marginBottom:"5px",fontWeight:"700"}}>Tipo 1</div>
+            <select value={setup.type1} onChange={e=>{ f("type1",e.target.value); setAutoDetected(false); }}
+              style={{width:"100%",padding:"10px 12px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:"8px",color:setup.type1?"var(--text)":"var(--text3)",fontSize:"14px",fontWeight:"700",appearance:"none",WebkitAppearance:"none",cursor:"pointer",backgroundImage:"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238898b0' fill='none' stroke-width='2'/%3E%3C/svg%3E\")",backgroundRepeat:"no-repeat",backgroundPosition:"right 10px center",paddingRight:"30px"}}>
+              <option value="">— Nenhum —</option>
+              {ALL_TYPES.map(t=>(
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <div style={{fontSize:"11px",color:"var(--text2)",marginBottom:"5px",fontWeight:"700"}}>Tipo 2 (opcional)</div>
+            <select value={setup.type2} onChange={e=>{ f("type2",e.target.value); setAutoDetected(false); }}
+              style={{width:"100%",padding:"10px 12px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:"8px",color:setup.type2?"var(--text)":"var(--text3)",fontSize:"14px",fontWeight:"700",appearance:"none",WebkitAppearance:"none",cursor:"pointer",backgroundImage:"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238898b0' fill='none' stroke-width='2'/%3E%3C/svg%3E\")",backgroundRepeat:"no-repeat",backgroundPosition:"right 10px center",paddingRight:"30px"}}>
+              <option value="">— Nenhum —</option>
+              {ALL_TYPES.map(t=>(
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+        {/* Preview dos tipos selecionados */}
+        {(setup.type1||setup.type2) && (
+          <div style={{display:"flex",gap:"6px",marginBottom:"10px",flexWrap:"wrap"}}>
+            {[setup.type1,setup.type2].filter(Boolean).map(t=>(
+              <span key={t} className="badge" style={{background:TYPE_COLOR[t]||"var(--border)",color:"#fff",fontSize:"12px",padding:"4px 10px",fontWeight:"800"}}>{t}</span>
+            ))}
+          </div>
+        )}
         {selRoute && (
           <div style={{background:hasAdv?"var(--gold-dim)":"var(--surface)",border:"1px solid "+(hasAdv?"var(--gold)":"var(--border)"),borderRadius:"8px",padding:"10px 12px",fontSize:"12px"}}>
             <div style={{color:"var(--text2)",marginBottom:"5px",fontWeight:"700"}}>Tipos da rota:</div>
