@@ -1756,8 +1756,9 @@ function Pokewalker(){
 
   // ── Available routes ─────────────────────────────────────────
   function availRoutes(totalWatts, hasNat){
+    // Retorna APENAS rotas normais desbloqueadas (sem eventos)
     return ROUTES.filter(r=>{
-      if(r.event) return true;
+      if(r.event) return false;
       if(r.nat && !hasNat) return false;
       return totalWatts >= r.watts;
     });
