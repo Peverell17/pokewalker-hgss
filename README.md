@@ -6,6 +6,22 @@
 
 ---
 
+## 📸 Screenshots
+
+<div align="center">
+
+| Tela Principal | Menu | Wanderer |
+|:-:|:-:|:-:|
+| <img src="screenshots/home.jpg" width="220"/> | <img src="screenshots/menu.jpg" width="220"/> | <img src="screenshots/wanderer.jpg" width="220"/> |
+
+| Resultado PKHeX | Enviar Pokémon |
+|:-:|:-:|
+| <img src="screenshots/resultado.jpg" width="220"/> | <img src="screenshots/enviar.jpg" width="220"/> |
+
+</div>
+
+---
+
 ## 📖 O que é isso?
 
 O Pokéwalker era um acessório físico do Nintendo DS lançado junto com Pokémon HeartGold e SoulSilver em 2009. Ele permitia levar um Pokémon para passear no mundo real, ganhar EXP, Watts, capturar Pokémon e encontrar itens — tudo contando seus passos.
