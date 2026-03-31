@@ -23,9 +23,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js" crossorigin></script>
   <style>
     :root {
       --bg:#0d1420; --surface:#131e2e; --card:#192840; --card2:#1e3050;
@@ -36,6 +36,14 @@
       --purple:#7058a8; --pink:#c86888; --amber:#e07820; --teal:#288878;
       --font-px:'Press Start 2P',monospace; --font:'Nunito',sans-serif;
       --r:12px; --r-sm:8px; --max-w:440px;
+    }
+    body.light {
+      --bg:#f0ece0; --surface:#ffffff; --card:#fffdf5; --card2:#fef9e8;
+      --border:#d4c89a; --border2:#b8a870;
+      --gold:#a07010; --gold-b:#b88018; --gold-dim:rgba(160,112,16,.1); --gold-glow:rgba(184,128,24,.2);
+      --text:#1a1408; --text2:#5a4a20; --text3:#8a7a50;
+      --red:#c03020; --green:#207a40; --blue:#1050a0;
+      --purple:#503888; --pink:#a84868; --amber:#c06010; --teal:#187060;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html,body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
@@ -111,7 +119,11 @@
       var d = document.getElementById('erro');
       var m = document.getElementById('erro-msg');
       if (d && m) {
-        m.textContent = 'Erro: ' + msg + '\nArquivo: ' + src + '\nLinha: ' + line + ', Coluna: ' + col + (err ? '\n\n' + err.stack : '');
+        var srcInfo = src ? src : '(script externo — CDN)';
+        var detail = line === 0 ? 
+          'Um dos scripts externos não carregou.\nVerifique sua conexão com a internet e tente novamente.' :
+          'Linha: ' + line + ', Coluna: ' + col;
+        m.textContent = 'Erro: ' + msg + '\nArquivo: ' + srcInfo + '\n' + detail + (err ? '\n\n' + err.stack : '');
         d.style.display = 'block';
         var splash = document.getElementById('splash');
         if (splash) splash.style.display = 'none';
@@ -841,22 +853,116 @@ function getMoves(routeId,group){
 }
 function isSpecialRoute(routeId){ return !!ROUTE_MOVES[routeId]; }
 
-function generateCapturedPokemon(lcg,tid,sid,wildPkmn,routeId){
-  // Pokéwalker nunca gera shiny (força reroll)
-  // Pokéwalker nunca gera Nature Quirky (índice 24)
-  let rawPid = lcg.next() >>> 0;
-  // Se shiny, corrige
-  if(isShiny(rawPid,tid,sid)) rawPid = (rawPid ^ 0x10000) >>> 0;
-  const natureIdx = rawPid % 25 === 24 ? 0 : rawPid % 25;
-  const iv1 = lcg.next() >>> 0;
-  const iv2 = lcg.next() >>> 0;
+// Gênero base por espécie (limiar Gen4: feminino se pidLow <= ratio)
+const GENDER_RATIO={
+  Pikachu:31,Pichu:31,Raichu:31,Nidoran:127,Clefairy:191,Cleffa:191,Igglybuff:191,
+  Jigglypuff:191,Togepi:31,Togetic:31,Togekiss:31,Mareep:127,Flaaffy:127,Ampharos:127,
+  Marill:127,Azumarill:127,Sudowoodo:127,Politoed:127,Aipom:127,Sunkern:127,Sunflora:127,
+  Yanma:127,Wobbuffet:127,Slowking:127,Misdreavus:127,Wooper:127,Quagsire:127,
+  Girafarig:127,Forretress:127,Dunsparce:127,Steelix:127,Snubbull:191,Granbull:191,
+  Heracross:127,Sneasel:127,Teddiursa:127,Ursaring:127,Swinub:127,Piloswine:127,
+  Delibird:127,Houndour:127,Houndoom:127,Phanpy:127,Donphan:127,Stantler:127,
+  Smeargle:127,Tyrogue:255,Hitmontop:255,Smoochum:254,Elekid:127,Magby:127,
+  Miltank:254,Blissey:254,Larvitar:127,Pupitar:127,Tyranitar:127,
+  Treecko:31,Grovyle:31,Sceptile:31,Torchic:31,Combusken:31,Blaziken:31,
+  Mudkip:31,Marshtomp:31,Swampert:31,Poochyena:127,Mightyena:127,Zigzagoon:127,
+  Linoone:127,Wurmple:127,Silcoon:127,Beautifly:127,Cascoon:127,Dustox:127,
+  Lotad:127,Lombre:127,Ludicolo:127,Seedot:127,Nuzleaf:127,Shiftry:127,
+  Taillow:127,Swellow:127,Wingull:127,Pelipper:127,Ralts:127,Kirlia:127,
+  Gardevoir:127,Surskit:127,Masquerain:127,Shroomish:127,Breloom:127,
+  Slakoth:127,Vigoroth:127,Slaking:127,Nincada:127,Ninjask:127,Shedinja:255,
+  Whismur:127,Loudred:127,Exploud:127,Makuhita:63,Hariyama:63,Azurill:191,
+  Nosepass:127,Skitty:191,Delcatty:191,Sableye:127,Mawile:127,Aron:127,
+  Lairon:127,Aggron:127,Meditite:127,Medicham:127,Electrike:127,Manectric:127,
+  Plusle:127,Minun:127,Volbeat:255,Illumise:254,Roselia:127,Gulpin:127,
+  Swalot:127,Carvanha:127,Sharpedo:127,Wailmer:127,Wailord:127,Numel:127,
+  Camerupt:127,Torkoal:127,Spoink:127,Grumpig:127,Spinda:127,Trapinch:127,
+  Vibrava:127,Flygon:127,Cacnea:127,Cacturne:127,Swablu:127,Altaria:127,
+  Zangoose:127,Seviper:127,Lunatone:0,Solrock:0,Barboach:127,Whiscash:127,
+  Corphish:127,Crawdaunt:127,Baltoy:0,Claydol:0,Lileep:127,Cradily:127,
+  Anorith:127,Armaldo:127,Feebas:127,Milotic:127,Castform:0,Kecleon:127,
+  Shuppet:127,Banette:127,Duskull:127,Dusclops:127,Tropius:127,Chimecho:127,
+  Absol:127,Snorunt:127,Glalie:127,Spheal:127,Sealeo:127,Walrein:127,
+  Clamperl:127,Huntail:127,Gorebyss:127,Relicanth:63,Luvdisc:127,Bagon:127,
+  Shelgon:127,Salamence:127,Beldum:0,Metang:0,Metagross:0,
+  Turtwig:31,Grotle:31,Torterra:31,Chimchar:31,Monferno:31,Infernape:31,
+  Piplup:31,Prinplup:31,Empoleon:31,Starly:127,Staravia:127,Staraptor:127,
+  Bidoof:127,Bibarel:127,Kricketot:127,Kricketune:127,Shinx:127,Luxio:127,
+  Luxray:127,Budew:127,Roserade:127,Cranidos:31,Rampardos:31,Shieldon:31,
+  Bastiodon:31,Burmy:127,Wormadam:254,Mothim:255,Combee:127,Vespiquen:254,
+  Pachirisu:127,Buizel:127,Floatzel:127,Cherubi:127,Cherrim:127,Shellos:127,
+  Gastrodon:127,Ambipom:127,Drifloon:127,Drifblim:127,Buneary:127,Lopunny:127,
+  Mismagius:127,Honchkrow:127,Glameow:191,Purugly:191,Chingling:127,Stunky:127,
+  Skuntank:127,Bronzor:0,Bronzong:0,Bonsly:127,Mime:127,Happiny:254,
+  Chatot:127,Spiritomb:127,Gible:127,Gabite:127,Garchomp:127,Munchlax:63,
+  Riolu:31,Lucario:31,Hippopotas:127,Hippowdon:127,Skorupi:127,Drapion:127,
+  Croagunk:127,Toxicroak:127,Carnivine:127,Finneon:127,Lumineon:127,
+  Mantyke:127,Snover:127,Abomasnow:127,Weavile:127,Magnezone:0,Lickilicky:127,
+  Rhyperior:127,Tangrowth:127,Electivire:127,Magmortar:127,Togekiss:31,
+  Yanmega:127,Leafeon:127,Glaceon:127,Gliscor:127,Mamoswine:127,
+  Porygon2:0,"Porygon-Z":0,Gallade:255,Dusknoir:127,Froslass:254,
+  Rotom:0,Uxie:0,Mesprit:0,Azelf:0,Dialga:0,Palkia:0,Heatran:127,
+  Regigigas:0,Giratina:0,Cresselia:254,Phione:0,Manaphy:0,Darkrai:0,
+  Shaymin:0,Arceus:0,Eevee:31,Vaporeon:31,Jolteon:31,Flareon:31,
+  Espeon:31,Umbreon:31,Leafeon:31,Glaceon:31,
+  // Padrão para não encontrados
+  default:127
+};
+
+function getGenderRatio(name){
+  return GENDER_RATIO[name] !== undefined ? GENDER_RATIO[name] : 127;
+}
+
+function generateCapturedPokemon(irng, tid, sid, wildPkmn, routeId){
+  // Fórmula real do Pokéwalker (validada pelo PKHeX):
+  // PID_low = byte aleatório do IRNG
+  // PID_high = TID ^ SID ^ PID_low ^ 0x8000  (garante não-shiny: sv = 0x8000 >= 8)
+  // Nature = PID % 25 (sem Quirky = índice 24)
+  // Gender ajustado pelo limiar da espécie
+  
+  const genderRatio = getGenderRatio(wildPkmn.name);
+  const wantFemale = wildPkmn.gender === "♀";
+  const wantMale = wildPkmn.gender === "♂";
+  const genderless = wildPkmn.gender === "-" || genderRatio === 0 || genderRatio === 255 || genderRatio === 254;
+  
+  let pidLow = (irng.next() >>> 16) & 0xFF;
+  let pid = 0, natureIdx = 0;
+  
+  // Tenta até 512 vezes para achar PID válido
+  for(let i = 0; i < 512; i++){
+    pidLow = pidLow & 0xFF;
+    // Calcula pid_high para garantir não-shiny: sv = TID^SID^PID_high^PID_low = 0x8000 >= 8
+    const pidHigh = ((tid ^ sid ^ pidLow ^ 0x8000) & 0xFFFF);
+    pid = ((pidHigh << 16) | pidLow) >>> 0;
+    
+    // Verifica gênero PRIMEIRO (para evitar conflito com nature)
+    if(!genderless){
+      const pidGenderFemale = pidLow <= genderRatio;
+      if(wantFemale && !pidGenderFemale){ pidLow = (pidLow - 1 + 256) & 0xFF; continue; }
+      if(wantMale && pidGenderFemale){ pidLow = (pidLow + 1) & 0xFF; continue; }
+    }
+    
+    // Verifica nature (sem Quirky) — ajusta na mesma direção do gênero
+    natureIdx = pid % 25;
+    if(natureIdx === 24){
+      pidLow = wantFemale ? (pidLow - 1 + 256) & 0xFF : (pidLow + 1) & 0xFF;
+      continue;
+    }
+    break;
+  }
+  
+  // IVs via LCG (independente do PID no Pokéwalker)
+  const iv1 = irng.next() >>> 0;
+  const iv2 = irng.next() >>> 0;
+  
   return {
     name: wildPkmn.name, gender: wildPkmn.gender, level: wildPkmn.level,
-    pid: "0x" + rawPid.toString(16).toUpperCase().padStart(8,"0"),
-    pidDec: rawPid,
+    pid: "0x" + pid.toString(16).toUpperCase().padStart(8,"0"),
+    pidDec: pid,
+    pidNum: pid,
     shiny: false,
     nature: NATURES[natureIdx],
-    ability: getAbility(wildPkmn.name, rawPid),
+    ability: getAbility(wildPkmn.name, pid),
     ivs: {hp:(iv1>>0)&31,atk:(iv1>>5)&31,def:(iv1>>10)&31,spe:(iv2>>0)&31,spa:(iv2>>5)&31,spd:(iv2>>10)&31},
     moves: getMoves(routeId, wildPkmn.group||"C"),
     isSpecial: isSpecialRoute(routeId),
@@ -1106,32 +1212,48 @@ function SetupScreen({setup,setSetup,pw,avail,onStart,onStats}){
           <button key={r.id} className="btn" onClick={()=>f("route",r.id)}
             style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",width:"100%",padding:"13px 15px",background:setup.route===r.id?"var(--gold-dim)":"var(--card)",border:"1px solid "+(setup.route===r.id?"var(--gold)":"var(--border)"),borderRadius:"10px",marginBottom:"7px",cursor:"pointer",textAlign:"left"}}>
             <div style={{flex:1}}>
-              <div style={{fontSize:"14px",fontWeight:"800",color:setup.route===r.id?"var(--gold-b)":"var(--text)",marginBottom:"3px"}}>{setup.route===r.id?"▶ ":""}{r.name}{r.nat&&<span style={{fontSize:"10px",color:"var(--amber)",marginLeft:"6px",fontWeight:"700"}}>★NAT</span>}</div>
-              {setup.route===r.id && r.desc && <div style={{fontSize:"11px",color:"var(--text3)",lineHeight:"1.4",marginTop:"3px"}}>{r.desc}</div>}
+              <div style={{fontSize:"15px",fontWeight:"800",color:setup.route===r.id?"var(--gold-b)":"var(--text)",marginBottom:"3px"}}>{setup.route===r.id?"▶ ":""}{r.name}{r.nat&&<span style={{fontSize:"10px",color:"var(--amber)",marginLeft:"6px",fontWeight:"700"}}>★NAT</span>}</div>
+              {setup.route===r.id && r.desc && <div style={{fontSize:"12px",color:"var(--text3)",lineHeight:"1.5",marginTop:"4px"}}>{r.desc}</div>}
             </div>
             <div style={{flexShrink:0,marginLeft:"8px",display:"flex",flexWrap:"wrap",justifyContent:"flex-end",gap:"2px",maxWidth:"120px"}}>
               {r.types.map(t=><span key={t} className="badge" style={{background:TYPE_COLOR[t]||"var(--border)",color:"#fff",fontSize:"10px",padding:"2px 7px"}}>{t}</span>)}
             </div>
           </button>
         ))}
-        {events.length>0 && <>
-          <div style={{fontSize:"10px",color:"var(--amber)",letterSpacing:"1px",textTransform:"uppercase",margin:"12px 0 8px",fontWeight:"800"}}>✨ Rotas de Evento</div>
-          {events.map(r=>(
-            <button key={r.id} className="btn" onClick={()=>f("route",r.id)}
-              style={{display:"flex",alignItems:"center",width:"100%",padding:"13px 15px",background:setup.route===r.id?"rgba(232,176,48,.12)":"var(--card)",border:"1px solid "+(setup.route===r.id?"var(--amber)":"var(--border)"),borderRadius:"10px",marginBottom:"7px",cursor:"pointer"}}>
-              <span style={{fontSize:"14px",fontWeight:"800",color:setup.route===r.id?"var(--amber)":"var(--text)",flex:1}}>✨ {r.name}</span>
-            </button>
-          ))}
-        </>}
-        {locked.length>0 && <>
-          <div style={{fontSize:"10px",color:"var(--text3)",letterSpacing:"1px",textTransform:"uppercase",margin:"12px 0 8px",fontWeight:"800"}}>🔒 Bloqueadas</div>
-          {locked.map(r=>(
-            <div key={r.id} style={{display:"flex",justifyContent:"space-between",padding:"11px 15px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:"10px",marginBottom:"6px",opacity:0.45}}>
-              <span style={{fontSize:"13px",color:"var(--text3)",fontWeight:"700"}}>🔒 {r.name}</span>
-              <span style={{fontSize:"12px",color:"var(--text3)",fontWeight:"700"}}>{r.nat?"Pokédex Nacional":r.watts>0?r.watts.toLocaleString()+"W":""}</span>
+        {events.length>0 && (
+          <div style={{marginTop:"16px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"10px"}}>
+              <div style={{flex:1,height:"1px",background:"var(--border)"}}/>
+              <div style={{fontSize:"10px",color:"var(--amber)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:"800",whiteSpace:"nowrap"}}>✨ Rotas de Evento</div>
+              <div style={{flex:1,height:"1px",background:"var(--border)"}}/>
             </div>
-          ))}
-        </>}
+            <div style={{background:"rgba(224,120,32,.06)",border:"1px solid rgba(224,120,32,.25)",borderRadius:"12px",padding:"10px",marginBottom:"4px"}}>
+              <div style={{fontSize:"11px",color:"var(--amber)",marginBottom:"8px",fontWeight:"700",lineHeight:"1.4"}}>Requerem distribuição oficial ou save editado com a rota desbloqueada.</div>
+              {events.map(r=>(
+                <button key={r.id} className="btn" onClick={()=>f("route",r.id)}
+                  style={{display:"flex",alignItems:"center",width:"100%",padding:"12px 14px",background:setup.route===r.id?"rgba(224,120,32,.18)":"rgba(224,120,32,.06)",border:"1px solid "+(setup.route===r.id?"var(--amber)":"rgba(224,120,32,.3)"),borderRadius:"10px",marginBottom:"6px",cursor:"pointer"}}>
+                  <span style={{fontSize:"15px",fontWeight:"800",color:setup.route===r.id?"var(--amber)":"var(--text)",flex:1}}>✨ {r.name}</span>
+                  {setup.route===r.id && r.desc && <span style={{fontSize:"11px",color:"var(--amber)",opacity:.7,marginLeft:8}}>{r.desc}</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {locked.length>0 && (
+          <div style={{marginTop:"14px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"10px"}}>
+              <div style={{flex:1,height:"1px",background:"var(--border)"}}/>
+              <div style={{fontSize:"10px",color:"var(--text3)",letterSpacing:"1px",textTransform:"uppercase",fontWeight:"800",whiteSpace:"nowrap"}}>🔒 Bloqueadas</div>
+              <div style={{flex:1,height:"1px",background:"var(--border)"}}/>
+            </div>
+            {locked.map(r=>(
+              <div key={r.id} style={{display:"flex",justifyContent:"space-between",padding:"11px 15px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:"10px",marginBottom:"6px",opacity:0.45}}>
+                <span style={{fontSize:"14px",color:"var(--text3)",fontWeight:"700"}}>🔒 {r.name}</span>
+                <span style={{fontSize:"12px",color:"var(--text3)",fontWeight:"700"}}>{r.nat?"Pokédex Nacional":r.watts>0?r.watts.toLocaleString()+"W":""}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:"10px"}}>
         <Btn onClick={onStart} disabled={!canStart} label="▶ INICIAR PASSEIO"/>
@@ -1526,38 +1648,65 @@ function ResultScreen({result}){
         <div className="card" style={{padding:"14px",marginBottom:"14px"}}>
           <div style={{fontSize:"11px",color:"var(--text3)",fontWeight:"800",textTransform:"uppercase",letterSpacing:"1px",marginBottom:"10px"}}>Adicionar ao Jogo (PKHeX)</div>
           {s.capturedPokemon.map((p,i)=>(
-            <div key={i} style={{padding:"12px 0",borderBottom:"1px solid var(--border)"}}>
-              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:"8px"}}>
-                <PkmnSprite name={p.name} size={48}/>
+            <div key={i} style={{padding:"14px 0",borderBottom:"1px solid var(--border)"}}>
+              {/* Cabeçalho do Pokémon */}
+              <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:"10px"}}>
+                <PkmnSprite name={p.name} size={56}/>
                 <div style={{flex:1}}>
-                  <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:"3px"}}>
-                    <span style={{fontSize:"17px",fontWeight:"900",color:"var(--purple)"}}>{p.name}</span>
-                    <span style={{fontSize:"13px",color:"var(--text2)"}}>{p.gender} Lv.{p.level}</span>
-                    {p.isSpecial && <span style={{fontSize:"11px",color:"var(--green)",background:"rgba(48,160,96,.15)",padding:"2px 7px",borderRadius:4,fontWeight:"800"}}>★ ESPECIAL</span>}
+                  <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:"4px"}}>
+                    <span style={{fontSize:"20px",fontWeight:"900",color:"var(--purple)"}}>{p.name}</span>
+                    <span style={{fontSize:"15px",color:"var(--text2)",fontWeight:"700"}}>{p.gender} Lv.{p.level}</span>
+                    {p.isSpecial && <span style={{fontSize:"11px",color:"var(--green)",background:"rgba(48,160,96,.15)",padding:"3px 8px",borderRadius:4,fontWeight:"800"}}>★ ESPECIAL</span>}
                   </div>
-                  <div style={{fontSize:"12px",color:"var(--text3)",fontWeight:"700"}}>Rota: {p.route||""} · Grupo {p.group}</div>
+                  <div style={{fontSize:"13px",color:"var(--text3)",fontWeight:"700"}}>{p.route||""}</div>
                 </div>
               </div>
-              <div style={{background:"var(--surface)",borderRadius:8,padding:"10px 12px"}}>
-                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px",fontSize:"12px",marginBottom:"8px"}}>
-                  <span style={{color:"var(--text3)"}}>PID:</span><span style={{color:"var(--text)",fontFamily:"monospace",fontWeight:"800",fontSize:"11px"}}>{p.pid}</span>
-                  <span style={{color:"var(--text3)"}}>Nature:</span><span style={{color:"var(--text)",fontWeight:"800"}}>{p.nature||"—"}</span>
-                  <span style={{color:"var(--text3)"}}>Ability:</span><span style={{color:"var(--text)",fontWeight:"800"}}>{p.ability||"—"}</span>
+              {/* Dados PKHeX */}
+              <div style={{background:"var(--surface)",borderRadius:10,padding:"12px 14px"}}>
+                {/* PID em destaque */}
+                <div style={{marginBottom:"10px",padding:"8px 10px",background:"var(--card)",borderRadius:8,border:"1px solid var(--border)"}}>
+                  <div style={{fontSize:"11px",color:"var(--text3)",fontWeight:"700",marginBottom:"3px",textTransform:"uppercase",letterSpacing:".5px"}}>PID</div>
+                  <div style={{fontSize:"16px",fontFamily:"monospace",fontWeight:"900",color:"var(--gold-b)",letterSpacing:"2px"}}>{p.pid}</div>
                 </div>
-                {p.ivs && <><div style={{fontSize:"11px",color:"var(--text3)",marginBottom:"4px",fontWeight:"700"}}>IVs:</div><IVGrid ivs={p.ivs}/></>}
-                {p.moves && <div style={{marginTop:"8px",display:"flex",flexWrap:"wrap",gap:"4px"}}>
-                  {p.moves.map((m,mi)=>(
-                    <span key={mi} style={{fontSize:"11px",background:p.isSpecial?"rgba(48,160,96,.15)":"var(--card)",border:"1px solid "+(p.isSpecial?"var(--green)":"var(--border)"),borderRadius:4,padding:"3px 8px",color:p.isSpecial?"#6ee7b7":"var(--text2)",fontWeight:"700"}}>{m}</span>
-                  ))}
+                {/* Nature + Ability lado a lado */}
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px",marginBottom:"10px"}}>
+                  <div style={{background:"var(--card)",borderRadius:8,padding:"8px 10px",border:"1px solid var(--border)"}}>
+                    <div style={{fontSize:"11px",color:"var(--text3)",fontWeight:"700",marginBottom:"2px",textTransform:"uppercase",letterSpacing:".5px"}}>Nature</div>
+                    <div style={{fontSize:"15px",fontWeight:"800",color:"var(--text)"}}>{p.nature||"—"}</div>
+                  </div>
+                  <div style={{background:"var(--card)",borderRadius:8,padding:"8px 10px",border:"1px solid var(--border)"}}>
+                    <div style={{fontSize:"11px",color:"var(--text3)",fontWeight:"700",marginBottom:"2px",textTransform:"uppercase",letterSpacing:".5px"}}>Ability</div>
+                    <div style={{fontSize:"15px",fontWeight:"800",color:"var(--blue)"}}>{p.ability||"—"}</div>
+                  </div>
+                </div>
+                {/* IVs */}
+                {p.ivs && <div style={{marginBottom:"10px"}}>
+                  <div style={{fontSize:"11px",color:"var(--text3)",marginBottom:"5px",fontWeight:"700",textTransform:"uppercase",letterSpacing:".5px"}}>IVs</div>
+                  <IVGrid ivs={p.ivs}/>
+                </div>}
+                {/* Moves */}
+                {p.moves && <div>
+                  <div style={{fontSize:"11px",color:"var(--text3)",marginBottom:"5px",fontWeight:"700",textTransform:"uppercase",letterSpacing:".5px"}}>Moves</div>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:"4px"}}>
+                    {p.moves.map((m,mi)=>(
+                      <span key={mi} style={{fontSize:"12px",background:p.isSpecial?"rgba(48,160,96,.15)":"var(--card2)",border:"1px solid "+(p.isSpecial?"var(--green)":"var(--border2)"),borderRadius:6,padding:"4px 10px",color:p.isSpecial?"#6ee7b7":"var(--text2)",fontWeight:"700"}}>{m}</span>
+                    ))}
+                  </div>
                 </div>}
               </div>
             </div>
           ))}
-          {s.foundItems.map((it,i)=>(
-            <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 0",borderBottom:"1px solid var(--border)",fontSize:"13px",color:"var(--teal)",fontWeight:"700"}}>
-              <ItemSprite name={it.name||it} size={20}/> {it.name||it}
+          {s.foundItems.length>0 && (
+            <div style={{marginTop: s.capturedPokemon.length>0?"12px":"0"}}>
+              {s.capturedPokemon.length>0 && <div style={{fontSize:"11px",color:"var(--text3)",fontWeight:"800",textTransform:"uppercase",letterSpacing:"1px",marginBottom:"8px"}}>Itens Encontrados</div>}
+              {s.foundItems.map((it,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",background:"var(--surface)",borderRadius:8,marginBottom:"6px",border:"1px solid var(--border)"}}>
+                  <ItemSprite name={it.name||it} size={26}/>
+                  <span style={{fontSize:"16px",color:"var(--teal)",fontWeight:"800"}}>{it.name||it}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       )}
       {newRoutes.length>0 && (
@@ -1586,6 +1735,15 @@ function Pokewalker(){
   const [toasts, setToasts] = useState([]);
   const [confirmReset, setConfirmReset] = useState(false);
   const [result, setResult] = useState(null);
+  const [isDark, setIsDark] = useState(()=>{
+    try{ return localStorage.getItem("pw_theme") !== "light"; }catch(e){ return true; }
+  });
+
+  // Apply theme to body
+  useEffect(()=>{
+    document.body.classList.toggle("light", !isDark);
+    try{ localStorage.setItem("pw_theme", isDark?"dark":"light"); }catch(e){}
+  },[isDark]);
 
   // Save whenever pw changes
   useEffect(()=>{ lsSave(pw); },[pw]);
@@ -1765,9 +1923,9 @@ function Pokewalker(){
         if(r2<catchChance){
           newLog.push("Captura bem-sucedida! Wobble... Wobble... Snap!");
           // Generate captured pokemon
-          const lcg2 = new LCG(rng.s);
-          const tid = (stroll&&stroll.pokemon?stroll.pokemon.tid)||0;
-          const sid = (stroll&&stroll.pokemon?stroll.pokemon.sid)||0;
+          const lcg2 = new IRNG(rng.s ^ 0xDEADBEEF);
+          const tid = (stroll&&stroll.pokemon&&stroll.pokemon.tid)||0;
+          const sid = (stroll&&stroll.pokemon&&stroll.pokemon.sid)||0;
           const gen = generateCapturedPokemon(lcg2, pw.trainer.tid||0, pw.trainer.sid||0, c.wild, stroll?stroll.route.id:"refreshing_field");
           gen.route = stroll?stroll.route.name:"";
           // Add to caught
@@ -1940,12 +2098,17 @@ function Pokewalker(){
     });
   }
   function closeWanderer(){
+    // Se o wanderer resolveu (batalhou, trocou, ou fugiu explicitamente), marca como fled
     setStroll(s=>{
       if(!s) return s;
       return {...s, wandererFled:true, wandererFledAt:s.steps};
     });
     setWanderer(null);
     setScreen("home");
+  }
+  function backFromWanderer(){
+    // Apenas volta ao menu SEM descartar o wanderer — ele continua disponível
+    setScreen("menu");
   }
 
   // ── END STROLL ────────────────────────────────────────────────
@@ -2023,15 +2186,21 @@ function Pokewalker(){
   return (
     <div style={{maxWidth:"var(--max-w)",margin:"0 auto",padding:"0 0 60px"}}>
       {/* Header */}
-      <div className="gold-header" style={{position:"sticky",top:0,zIndex:100,padding:"14px 16px 12px",display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"0",backdropFilter:"blur(12px)"}}>
+      <div className="gold-header" style={{position:"sticky",top:0,zIndex:100,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"0",backdropFilter:"blur(12px)"}}>
         <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
           <span style={{fontSize:"22px",filter:"drop-shadow(0 0 8px var(--gold-glow))"}}>&#128099;</span>
           <span className="px" style={{fontSize:"9px",color:"var(--gold-b)",letterSpacing:"2px"}}>POKÉWALKER</span>
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
-          {stroll && <span style={{fontSize:"12px",color:"var(--gold-b)",fontWeight:"800"}}>{stroll.watts}W</span>}
-          {stroll && <span style={{fontSize:"12px",color:"var(--text2)",fontWeight:"700"}}>{stroll.steps.toLocaleString()} passos</span>}
-          {!stroll && <span style={{fontSize:"12px",color:"var(--text3)",fontWeight:"700"}}>{(pw.totalWatts||0).toLocaleString()}W total</span>}
+        <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+          {stroll && (
+            <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
+              <span style={{fontSize:"13px",color:"var(--gold-b)",fontWeight:"800"}}>{stroll.watts}W</span>
+              <span style={{fontSize:"12px",color:"var(--text3)"}}>·</span>
+              <span style={{fontSize:"13px",color:"var(--blue)",fontWeight:"700"}}>{stroll.steps.toLocaleString()} passos</span>
+            </div>
+          )}
+          {!stroll && <span style={{fontSize:"12px",color:"var(--text3)",fontWeight:"700"}}>{(pw.totalWatts||0).toLocaleString()}W</span>}
+          <button onClick={()=>setIsDark(d=>!d)} style={{background:"var(--card2)",border:"1px solid var(--border)",borderRadius:"8px",padding:"6px 8px",cursor:"pointer",fontSize:"16px",lineHeight:1,WebkitTapHighlightColor:"transparent"}}>{isDark?"☀️":"🌙"}</button>
         </div>
       </div>
 
@@ -2087,7 +2256,7 @@ function Pokewalker(){
             onBattle={wandererBattle}
             onTrade={wandererTrade}
             onBattleAction={wandererBattleAction}
-            onBack={closeWanderer}
+            onBack={backFromWanderer}
           />
         )}
         {screen==="itemswap" && pendingItem && stroll && (
