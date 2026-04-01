@@ -159,12 +159,12 @@ const ROUTES = [
    desc:"Um lugar refrescante onde sopram brisas suaves. Muitos Pokémon chamam este lugar de lar!",
    types:["Fire","Bug","Flying"],
    pokemon:[
-     {group:"A",name:"Kangaskhan",gender:"♀",level:8,steps:3000,weight:50},
-     {group:"A",name:"Doduo",gender:"♀",level:8,steps:2000,weight:70},
-     {group:"B",name:"Nidoran♀",gender:"♀",level:5,steps:500,weight:75},
-     {group:"B",name:"Nidoran♂",gender:"♂",level:5,steps:2000,weight:75},
-     {group:"C",name:"Pidgey",gender:"♂",level:5,steps:0,weight:100},
-     {group:"C",name:"Sentret",gender:"♀",level:5,steps:0,weight:100}
+     {group:"A",name:"Kangaskhan",gender:"♀",level:8,steps:3000,weight:50,moves:["Comet Punch","Leer","Fake Out"]},
+     {group:"A",name:"Doduo",gender:"♀",level:8,steps:2000,weight:70,moves:["Peck","Growl","Quick Attack"]},
+     {group:"B",name:"Nidoran♀",gender:"♀",level:5,steps:500,weight:75,moves:["Growl","Scratch"]},
+     {group:"B",name:"Nidoran♂",gender:"♂",level:5,steps:2000,weight:75,moves:["Leer","Peck"]},
+     {group:"C",name:"Pidgey",gender:"♂",level:5,steps:0,weight:100,moves:["Tackle","Sand Attack"]},
+     {group:"C",name:"Sentret",gender:"♀",level:5,steps:0,weight:100,moves:["Scratch","Foresight","Defense Curl"]}
    ],
    items:[
      {name:"Revive",steps:2500,weight:20},{name:"Full Heal",steps:2000,weight:20},
@@ -178,12 +178,12 @@ const ROUTES = [
    desc:"Uma floresta animada cheia dos sons dos Pokémon. Você pode encontrar muitos aqui!",
    types:["Fire","Ice","Flying"],
    pokemon:[
-     {group:"A",name:"Wobbuffet",gender:"♀",level:15,steps:4000,weight:30},
-     {group:"A",name:"Bellsprout",gender:"♀",level:8,steps:3000,weight:70},
-     {group:"B",name:"Venonat",gender:"♂",level:6,steps:700,weight:89},
-     {group:"B",name:"Paras",gender:"♀",level:6,steps:700,weight:89},
-     {group:"C",name:"Oddish",gender:"♀",level:5,steps:0,weight:100},
-     {group:"C",name:"Spearow",gender:"♂",level:5,steps:0,weight:100}
+     {group:"A",name:"Wobbuffet",gender:"♀",level:15,steps:4000,weight:30,moves:["Counter","Mirror Coat","Safeguard","Destiny Bond"]},
+     {group:"A",name:"Bellsprout",gender:"♀",level:8,steps:3000,weight:70,moves:["Vine Whip","Growth"]},
+     {group:"B",name:"Venonat",gender:"♂",level:6,steps:700,weight:89,moves:["Tackle","Disable","Foresight","Supersonic"]},
+     {group:"B",name:"Paras",gender:"♀",level:6,steps:700,weight:89,moves:["Scratch","Stun Spore","Poison Powder"]},
+     {group:"C",name:"Oddish",gender:"♀",level:5,steps:0,weight:100,moves:["Absorb","Sweet Scent"]},
+     {group:"C",name:"Spearow",gender:"♂",level:5,steps:0,weight:100,moves:["Peck","Growl","Leer"]}
    ],
    items:[
      {name:"Net Ball",steps:5000,weight:30},{name:"Revive",steps:2500,weight:20},
@@ -197,12 +197,12 @@ const ROUTES = [
    desc:"Uma estrada montanhosa acidentada. Pokémon fortes vivem entre pedras e penhascos!",
    types:["Water","Fighting","Ground"],
    pokemon:[
-     {group:"A",name:"Magby",gender:"♂",level:9,steps:5000,weight:50},
-     {group:"A",name:"Onix",gender:"♂",level:9,steps:4000,weight:80},
-     {group:"B",name:"Machop",gender:"♀",level:7,steps:1000,weight:92},
-     {group:"B",name:"Ponyta",gender:"♀",level:7,steps:1000,weight:92},
-     {group:"C",name:"Hoothoot",gender:"♀",level:6,steps:0,weight:100},
-     {group:"C",name:"Geodude",gender:"♀",level:8,steps:0,weight:100}
+     {group:"A",name:"Magby",gender:"♂",level:9,steps:5000,weight:50,moves:["Smog","Leer","Ember","Sunny Day"]},
+     {group:"A",name:"Onix",gender:"♂",level:9,steps:4000,weight:80,moves:["Harden","Bind","Screech","Rock Throw"]},
+     {group:"B",name:"Machop",gender:"♀",level:7,steps:1000,weight:92,moves:["Low Kick","Leer","Focus Energy"]},
+     {group:"B",name:"Ponyta",gender:"♀",level:7,steps:1000,weight:92,moves:["Growl","Tackle","Tail Whip"]},
+     {group:"C",name:"Hoothoot",gender:"♀",level:6,steps:0,weight:100,moves:["Tackle","Growl","Foresight","Hypnosis"]},
+     {group:"C",name:"Geodude",gender:"♀",level:8,steps:0,weight:100,moves:["Defense Curl","Mud-Slap","Rock Polish"]}
    ],
    items:[
      {name:"PP Up",steps:7000,weight:3},{name:"Hard Stone",steps:5000,weight:10},
@@ -216,12 +216,12 @@ const ROUTES = [
    desc:"Uma praia linda com água cristalina. Os Pokémon adoram brincar aqui!",
    types:["Grass","Electric","Dragon"],
    pokemon:[
-     {group:"A",name:"Psyduck",gender:"♀",level:10,steps:4000,weight:70},
-     {group:"A",name:"Staryu",gender:"-",level:10,steps:5000,weight:60},
-     {group:"B",name:"Slowpoke",gender:"♂",level:8,steps:1000,weight:87},
-     {group:"B",name:"Poliwag",gender:"♂",level:8,steps:1500,weight:87},
-     {group:"C",name:"Sunkern",gender:"♀",level:6,steps:0,weight:100},
-     {group:"C",name:"Wooper",gender:"♂",level:6,steps:0,weight:100}
+     {group:"A",name:"Psyduck",gender:"♀",level:10,steps:4000,weight:70,moves:["Water Sport","Scratch","Tail Whip","Water Gun"]},
+     {group:"A",name:"Staryu",gender:"—",level:10,steps:5000,weight:60,moves:["Tackle","Harden","Water Gun","Rapid Spin"]},
+     {group:"B",name:"Slowpoke",gender:"♂",level:8,steps:1000,weight:87,moves:["Curse","Yawn","Tackle","Growl"]},
+     {group:"B",name:"Poliwag",gender:"♂",level:8,steps:1500,weight:87,moves:["Water Sport","Bubble","Hypnosis"]},
+     {group:"C",name:"Sunkern",gender:"♀",level:6,steps:0,weight:100,moves:["Absorb","Growth","Mega Drain"]},
+     {group:"C",name:"Wooper",gender:"♂",level:6,steps:0,weight:100,moves:["Water Gun","Tail Whip","Mud Sport"]}
    ],
    items:[
      {name:"Dive Ball",steps:5000,weight:30},{name:"Big Pearl",steps:4000,weight:20},
@@ -235,12 +235,12 @@ const ROUTES = [
    desc:"Um bairro tranquilo. Você pode avistar Pokémon raros entre os edifícios!",
    types:["Fighting","Normal","Psychic"],
    pokemon:[
-     {group:"A",name:"Elekid",gender:"♂",level:11,steps:5000,weight:15},
-     {group:"A",name:"Magnemite",gender:"-",level:11,steps:4000,weight:40},
-     {group:"B",name:"Magnemite",gender:"-",level:8,steps:1000,weight:85},
-     {group:"B",name:"Murkrow",gender:"♀",level:11,steps:1000,weight:45},
-     {group:"C",name:"Hoothoot",gender:"♀",level:7,steps:0,weight:100},
-     {group:"C",name:"Rattata",gender:"♀",level:7,steps:0,weight:100}
+     {group:"A",name:"Elekid",gender:"♂",level:11,steps:5000,weight:15,moves:["Quick Attack","Leer","Low Kick","Thunder Punch"]},
+     {group:"A",name:"Magnemite",gender:"—",level:11,steps:4000,weight:40,moves:["Metal Sound","Tackle","Thunder Shock","Supersonic"]},
+     {group:"B",name:"Magnemite",gender:"—",level:8,steps:1000,weight:85,moves:["Metal Sound","Tackle","Thunder Shock"]},
+     {group:"B",name:"Murkrow",gender:"♀",level:11,steps:1000,weight:45,moves:["Peck","Astonish","Pursuit","Haze"]},
+     {group:"C",name:"Hoothoot",gender:"♀",level:7,steps:0,weight:100,moves:["Tackle","Growl","Foresight","Hypnosis"]},
+     {group:"C",name:"Rattata",gender:"♀",level:7,steps:0,weight:100,moves:["Tackle","Tail Whip","Quick Attack","Focus Energy"]}
    ],
    items:[
      {name:"Dusk Ball",steps:5000,weight:20},{name:"Revive",steps:2500,weight:20},
@@ -254,12 +254,12 @@ const ROUTES = [
    desc:"Uma caverna escura que parece assombrada. Muitos Pokémon vivem lá dentro!",
    types:["Fighting","Ground","Steel"],
    pokemon:[
-     {group:"A",name:"Duskull",gender:"♂",level:12,steps:5000,weight:30},
-     {group:"A",name:"Misdreavus",gender:"♀",level:14,steps:5000,weight:30},
-     {group:"B",name:"Gastly",gender:"♂",level:8,steps:1000,weight:85},
-     {group:"B",name:"Zubat",gender:"♀",level:9,steps:1000,weight:85},
-     {group:"C",name:"Geodude",gender:"♂",level:7,steps:0,weight:100},
-     {group:"C",name:"Zubat",gender:"♂",level:7,steps:0,weight:100}
+     {group:"A",name:"Smoochum",gender:"♀",level:12,steps:5000,weight:30,moves:["Pound","Lick","Sweet Kiss","Avalanche"]},
+     {group:"A",name:"Gastly",gender:"♀",level:15,steps:5000,weight:30,moves:["Hypnosis","Spite","Curse","Destiny Bond"]},
+     {group:"B",name:"Gastly",gender:"♀",level:10,steps:1000,weight:85,moves:["Hypnosis","Lick","Spite","Mean Look"]},
+     {group:"B",name:"Onix",gender:"♂",level:10,steps:1000,weight:85,moves:["Harden","Bind","Screech","Rock Throw"]},
+     {group:"C",name:"Zubat",gender:"♂",level:8,steps:0,weight:100,moves:["Leech Life","Supersonic"]},
+     {group:"C",name:"Machop",gender:"♂",level:8,steps:0,weight:100,moves:["Low Kick","Leer","Focus Energy"]}
    ],
    items:[
      {name:"Dusk Stone",steps:7500,weight:5},{name:"Dusk Ball",steps:5000,weight:20},
@@ -273,12 +273,12 @@ const ROUTES = [
    desc:"Um lago azul sereno cercado pela natureza. Pokémon raros se escondem em suas profundezas!",
    types:["Electric","Grass","Dragon"],
    pokemon:[
-     {group:"A",name:"Dratini",gender:"♂",level:15,steps:8000,weight:15},
-     {group:"A",name:"Gyarados",gender:"♀",level:15,steps:6000,weight:25},
-     {group:"B",name:"Goldeen",gender:"♀",level:10,steps:1000,weight:85},
-     {group:"B",name:"Magikarp",gender:"♂",level:10,steps:1000,weight:85},
-     {group:"C",name:"Poliwag",gender:"♀",level:8,steps:0,weight:100},
-     {group:"C",name:"Tentacool",gender:"♂",level:10,steps:0,weight:100}
+     {group:"A",name:"Dratini",gender:"♀",level:10,steps:8000,weight:15,moves:["Wrap","Leer","Thunder Wave"]},
+     {group:"A",name:"Poliwag",gender:"♀",level:15,steps:6000,weight:25,moves:["Water Sport","Hypnosis","Double Slap","Belly Drum"]},
+     {group:"B",name:"Krabby",gender:"♂",level:12,steps:1000,weight:85,moves:["Vise Grip","Leer","Harden","Crabhammer"]},
+     {group:"B",name:"Shellder",gender:"♀",level:12,steps:1000,weight:85,moves:["Tackle","Withdraw","Supersonic"]},
+     {group:"C",name:"Goldeen",gender:"♀",level:9,steps:0,weight:100,moves:["Peck","Tail Whip","Water Sport","Supersonic"]},
+     {group:"C",name:"Tentacool",gender:"♀",level:9,steps:0,weight:100,moves:["Poison Sting","Supersonic","Constrict"]}
    ],
    items:[
      {name:"Dragon Scale",steps:8000,weight:5},{name:"King's Rock",steps:5000,weight:10},
@@ -292,12 +292,12 @@ const ROUTES = [
    desc:"A beira de uma cidade agitada. Pokémon incomuns vagam por aqui!",
    types:["Normal","Poison","Dark"],
    pokemon:[
-     {group:"A",name:"Munchlax",gender:"♂",level:15,steps:8000,weight:5},
-     {group:"A",name:"Lickitung",gender:"♀",level:15,steps:6000,weight:20},
-     {group:"B",name:"Chansey",gender:"♀",level:12,steps:2000,weight:50},
-     {group:"B",name:"Ekans",gender:"♂",level:12,steps:2000,weight:80},
-     {group:"C",name:"Rattata",gender:"♂",level:10,steps:0,weight:100},
-     {group:"C",name:"Meowth",gender:"♂",level:10,steps:0,weight:100}
+     {group:"A",name:"Abra",gender:"♀",level:15,steps:8000,weight:5,moves:["Teleport"]},
+     {group:"A",name:"Voltorb",gender:"—",level:15,steps:6000,weight:20,moves:["Tackle","Sonic Boom","Spark","Rollout"]},
+     {group:"B",name:"Koffing",gender:"♀",level:13,steps:2000,weight:50,moves:["Tackle","Smog","Smokescreen","Self-Destruct"]},
+     {group:"B",name:"Grimer",gender:"♂",level:13,steps:2000,weight:80,moves:["Pound","Harden","Mud-Slap","Disable"]},
+     {group:"C",name:"Rattata",gender:"♀",level:16,steps:0,weight:100,moves:["Focus Energy","Bite","Pursuit","Hyper Fang"]},
+     {group:"C",name:"Furret",gender:"♂",level:15,steps:0,weight:100,moves:["Foresight","Defense Curl","Quick Attack","Fury Swipes"]}
    ],
    items:[
      {name:"Soothe Bell",steps:8000,weight:5},{name:"Oval Stone",steps:5000,weight:10},
@@ -312,12 +312,12 @@ const ROUTES = [
    desc:"Uma rota na região de Hoenn. Muitos Pokémon que não existem em Johto ou Kanto vivem aqui!",
    types:["Fire","Electric","Steel"],
    pokemon:[
-     {group:"A",name:"Roselia",gender:"♀",level:15,steps:5000,weight:30},
-     {group:"A",name:"Electrike",gender:"♂",level:14,steps:4000,weight:50},
-     {group:"B",name:"Shroomish",gender:"♂",level:10,steps:1000,weight:85},
-     {group:"B",name:"Zigzagoon",gender:"♀",level:10,steps:1000,weight:85},
-     {group:"C",name:"Taillow",gender:"♂",level:8,steps:0,weight:100},
-     {group:"C",name:"Wurmple",gender:"♀",level:8,steps:0,weight:100}
+     {group:"A",name:"Skitty",gender:"♀",level:30,steps:5000,weight:30,moves:["Attract","Assist","Charm","Feint Attack"]},
+     {group:"A",name:"Linoone",gender:"♀",level:30,steps:4000,weight:50,moves:["Sand Attack","Odor Sleuth","Mud Sport","Fury Swipes"]},
+     {group:"B",name:"Illumise",gender:"♀",level:25,steps:1000,weight:85,moves:["Charm","Moonlight","Wish","Encore"]},
+     {group:"B",name:"Volbeat",gender:"♂",level:25,steps:1000,weight:85,moves:["Moonlight","Quick Attack","Tail Glow","Signal Beam"]},
+     {group:"C",name:"Zigzagoon",gender:"♀",level:17,steps:0,weight:100,moves:["Tail Whip","Headbutt","Sand Attack","Odor Sleuth"]},
+     {group:"C",name:"Wurmple",gender:"♀",level:15,steps:0,weight:100,moves:["Tackle","String Shot","Poison Sting","Bug Bite"]}
    ],
    items:[
      {name:"Sun Stone",steps:6000,weight:5},{name:"Miracle Seed",steps:4000,weight:15},
@@ -331,12 +331,12 @@ const ROUTES = [
    desc:"Uma praia muito quente na região de Hoenn. Pokémon diferentes aparecem aqui!",
    types:["Water","Ice","Steel"],
    pokemon:[
-     {group:"A",name:"Corsola",gender:"♀",level:15,steps:5000,weight:20},
-     {group:"A",name:"Wingull",gender:"♂",level:14,steps:4000,weight:60},
-     {group:"B",name:"Corphish",gender:"♂",level:10,steps:1000,weight:80},
-     {group:"B",name:"Wailmer",gender:"♀",level:12,steps:2000,weight:70},
-     {group:"C",name:"Wingull",gender:"♀",level:8,steps:0,weight:100},
-     {group:"C",name:"Tentacool",gender:"♂",level:8,steps:0,weight:100}
+     {group:"A",name:"Wailmer",gender:"♀",level:31,steps:5000,weight:20,moves:["Water Pulse","Mist","Rest","Brine"]},
+     {group:"A",name:"Azurill",gender:"♀",level:20,steps:4000,weight:60,moves:["Tail Whip","Bubble","Slam","Water Gun"]},
+     {group:"B",name:"Horsea",gender:"♀",level:20,steps:1000,weight:80,moves:["Leer","Water Gun","Focus Energy","Bubble Beam"]},
+     {group:"B",name:"Carvanha",gender:"♀",level:26,steps:2000,weight:70,moves:["Ice Fang","Screech","Swagger","Assurance"]},
+     {group:"C",name:"Goldeen",gender:"♀",level:22,steps:0,weight:100,moves:["Water Sport","Supersonic","Horn Attack","Aqua Tail"]},
+     {group:"C",name:"Magikarp",gender:"♀",level:15,steps:0,weight:100,moves:["Splash","Tackle"]}
    ],
    items:[
      {name:"Deep Sea Scale",steps:6000,weight:5},{name:"Water Stone",steps:4000,weight:10},
@@ -350,12 +350,12 @@ const ROUTES = [
    desc:"Um caminho por um vulcão ativo. Pokémon de fogo muito raros vivem aqui!",
    types:["Water","Rock","Ground"],
    pokemon:[
-     {group:"A",name:"Torkoal",gender:"♂",level:15,steps:5000,weight:25},
-     {group:"A",name:"Slugma",gender:"♀",level:14,steps:4000,weight:55},
-     {group:"B",name:"Numel",gender:"♂",level:10,steps:1000,weight:85},
-     {group:"B",name:"Machop",gender:"♂",level:10,steps:1000,weight:85},
-     {group:"C",name:"Geodude",gender:"♂",level:8,steps:0,weight:100},
-     {group:"C",name:"Slugma",gender:"♂",level:8,steps:0,weight:100}
+     {group:"A",name:"Slugma",gender:"♀",level:31,steps:5000,weight:25,moves:["Ember","Recover","Ancient Power","Amnesia"]},
+     {group:"A",name:"Meditite",gender:"♂",level:32,steps:4000,weight:55,moves:["Feint","Calm Mind","Force Palm","High Jump Kick"]},
+     {group:"B",name:"Houndour",gender:"♂",level:27,steps:1000,weight:85,moves:["Roar","Bite","Odor Sleuth","Beat Up"]},
+     {group:"B",name:"Rhyhorn",gender:"♂",level:25,steps:1000,weight:85,moves:["Stomp","Fury Attack","Scary Face","Rock Blast"]},
+     {group:"C",name:"Ponyta",gender:"♀",level:19,steps:0,weight:100,moves:["Tail Whip","Ember","Flame Wheel","Stomp"]},
+     {group:"C",name:"Geodude",gender:"♂",level:29,steps:0,weight:100,moves:["Self-Destruct","Rollout","Rock Blast","Earthquake"]}
    ],
    items:[
      {name:"Fire Stone",steps:6000,weight:5},{name:"Charcoal",steps:4000,weight:10},
@@ -369,12 +369,12 @@ const ROUTES = [
    desc:"Um caminho que se integra às árvores da floresta. Os Pokémon aqui estão sempre mudando!",
    types:["Fire","Poison","Flying"],
    pokemon:[
-     {group:"A",name:"Breloom",gender:"♂",level:15,steps:5000,weight:20},
-     {group:"A",name:"Tropius",gender:"♂",level:15,steps:5000,weight:20},
-     {group:"B",name:"Seedot",gender:"♂",level:10,steps:1000,weight:80},
-     {group:"B",name:"Shroomish",gender:"♀",level:10,steps:1000,weight:80},
-     {group:"C",name:"Wurmple",gender:"♂",level:8,steps:0,weight:100},
-     {group:"C",name:"Taillow",gender:"♀",level:8,steps:0,weight:100}
+     {group:"A",name:"Kecleon",gender:"♂",level:30,steps:5000,weight:20,moves:["Feint","Psybeam","Shadow Sneak","Slash"]},
+     {group:"A",name:"Castform",gender:"♀",level:30,steps:5000,weight:20,moves:["Rain Dance","Sunny Day","Hail","Weather Ball"]},
+     {group:"B",name:"Girafarig",gender:"♀",level:28,steps:1000,weight:80,moves:["Agility","Psybeam","Baton Pass","Assurance"]},
+     {group:"B",name:"Stantler",gender:"♀",level:28,steps:1000,weight:80,moves:["Hypnosis","Stomp","Confuse Ray","Calm Mind"]},
+     {group:"C",name:"Gloom",gender:"♀",level:14,steps:0,weight:100,moves:["Absorb","Sweet Scent","Acid","Poison Powder"]},
+     {group:"C",name:"Weepinbell",gender:"♂",level:13,steps:0,weight:100,moves:["Vine Whip","Growth","Wrap","Sleep Powder"]}
    ],
    items:[
      {name:"Leaf Stone",steps:6000,weight:5},{name:"Big Mushroom",steps:4000,weight:10},
@@ -388,12 +388,12 @@ const ROUTES = [
    desc:"Uma caverna escura que parece assombrada. Diz-se que muitos Pokémon vivem lá dentro!",
    types:["Normal","Flying","Psychic"],
    pokemon:[
-     {group:"A",name:"Absol",gender:"♂",level:16,steps:7000,weight:15},
-     {group:"A",name:"Shuppet",gender:"♀",level:15,steps:5000,weight:30},
-     {group:"B",name:"Sableye",gender:"♂",level:12,steps:2000,weight:60},
-     {group:"B",name:"Shuppet",gender:"♂",level:12,steps:2000,weight:70},
-     {group:"C",name:"Zubat",gender:"♂",level:9,steps:0,weight:100},
-     {group:"C",name:"Sableye",gender:"♀",level:10,steps:0,weight:100}
+     {group:"A",name:"Marowak",gender:"♀",level:30,steps:7000,weight:15,moves:["Bonemerang","Rage","False Swipe","Thrash"]},
+     {group:"A",name:"Tauros",gender:"♂",level:30,steps:5000,weight:30,moves:["Pursuit","Rest","Payback","Zen Headbutt"]},
+     {group:"B",name:"Golbat",gender:"♂",level:33,steps:2000,weight:60,moves:["Wing Attack","Confuse Ray","Air Cutter","Mean Look"]},
+     {group:"B",name:"Natu",gender:"♀",level:24,steps:2000,weight:70,moves:["Teleport","Miracle Eye","Me First","Confuse Ray"]},
+     {group:"C",name:"Machop",gender:"♂",level:13,steps:0,weight:100,moves:["Leer","Focus Energy","Karate Chop","Bullet Punch"]},
+     {group:"C",name:"Gastly",gender:"♀",level:15,steps:0,weight:100,moves:["Mean Look","Curse","Night Shade","Spite"]}
    ],
    items:[
      {name:"Dusk Stone",steps:8000,weight:5},{name:"Spell Tag",steps:5000,weight:10},
@@ -407,12 +407,12 @@ const ROUTES = [
    desc:"Uma rota pela região de Sinnoh, longe de Johto e Kanto. Pokémon raros vivem aqui!",
    types:["Water","Fire","Ice"],
    pokemon:[
-     {group:"A",name:"Pachirisu",gender:"♀",level:15,steps:5000,weight:30},
-     {group:"A",name:"Buizel",gender:"♂",level:14,steps:5000,weight:50},
-     {group:"B",name:"Bidoof",gender:"♂",level:10,steps:1000,weight:80},
-     {group:"B",name:"Starly",gender:"♀",level:10,steps:1000,weight:80},
-     {group:"C",name:"Starly",gender:"♂",level:8,steps:0,weight:100},
-     {group:"C",name:"Bidoof",gender:"♀",level:8,steps:0,weight:100}
+     {group:"A",name:"Mime Jr.",gender:"♂",level:29,steps:5000,weight:30,moves:["Light Screen","Reflect","Psybeam","Substitute"]},
+     {group:"A",name:"Combee",gender:"♂",level:30,steps:5000,weight:50,moves:["Sweet Scent","Gust","Bug Bite"]},
+     {group:"B",name:"Shinx",gender:"♀",level:33,steps:1000,weight:80,moves:["Roar","Swagger","Thunder Fang","Crunch"]},
+     {group:"B",name:"Budew",gender:"♂",level:30,steps:1000,weight:80,moves:["Water Sport","Stun Spore","Mega Drain","Worry Seed"]},
+     {group:"C",name:"Bidoof",gender:"♀",level:13,steps:0,weight:100,moves:["Tackle","Growl","Defense Curl","Rollout"]},
+     {group:"C",name:"Kricketot",gender:"♂",level:15,steps:0,weight:100,moves:["Growl","Bide","Bug Bite"]}
    ],
    items:[
      {name:"Shiny Stone",steps:7000,weight:5},{name:"Dawn Stone",steps:5000,weight:5},
@@ -426,12 +426,12 @@ const ROUTES = [
    desc:"Uma estrada coberta de neve onde um passo errado pode ser perigoso — ela testa sua confiança!",
    types:["Fire","Fighting","Rock"],
    pokemon:[
-     {group:"A",name:"Sneasel",gender:"♀",level:17,steps:8000,weight:20},
-     {group:"A",name:"Smoochum",gender:"♀",level:16,steps:7000,weight:30},
-     {group:"B",name:"Swinub",gender:"♂",level:12,steps:2000,weight:75},
-     {group:"B",name:"Snorunt",gender:"♀",level:12,steps:2000,weight:75},
-     {group:"C",name:"Snorunt",gender:"♂",level:10,steps:0,weight:100},
-     {group:"C",name:"Swinub",gender:"♀",level:10,steps:0,weight:100}
+     {group:"A",name:"Snover",gender:"♂",level:31,steps:8000,weight:20,moves:["Wood Hammer","Mist","Ice Shard","Ingrain"]},
+     {group:"A",name:"Snorunt",gender:"♀",level:28,steps:7000,weight:30,moves:["Icy Wind","Headbutt","Protect","Ice Fang"]},
+     {group:"B",name:"Sneasel",gender:"♂",level:28,steps:2000,weight:75,moves:["Feint Attack","Crush Claw","Agility","Icy Wind"]},
+     {group:"B",name:"Bronzor",gender:"—",level:20,steps:2000,weight:75,moves:["Hypnosis","Imprison","Confuse Ray","Extrasensory"]},
+     {group:"C",name:"Swinub",gender:"♀",level:16,steps:0,weight:100,moves:["Mud Sport","Powder Snow","Mud-Slap","Endure"]},
+     {group:"C",name:"Mareep",gender:"♀",level:15,steps:0,weight:100,moves:["Tackle","Growl","Thunder Shock","Thunder Wave"]}
    ],
    items:[
      {name:"Dawn Stone",steps:8000,weight:5},{name:"NeverMeltIce",steps:5000,weight:10},
@@ -445,12 +445,12 @@ const ROUTES = [
    desc:"Uma floresta cercada por muitas árvores antigas. Muitos Pokémon vivem aqui!",
    types:["Bug","Fire","Flying"],
    pokemon:[
-     {group:"A",name:"Scyther",gender:"♂",level:18,steps:8000,weight:15},
-     {group:"A",name:"Heracross",gender:"♂",level:16,steps:6000,weight:25},
-     {group:"B",name:"Caterpie",gender:"♂",level:10,steps:1000,weight:80},
-     {group:"B",name:"Weedle",gender:"♂",level:10,steps:1000,weight:80},
-     {group:"C",name:"Metapod",gender:"♂",level:10,steps:0,weight:100},
-     {group:"C",name:"Kakuna",gender:"♂",level:10,steps:0,weight:100}
+     {group:"A",name:"Tropius",gender:"♀",level:35,steps:8000,weight:15,moves:["Stomp","Sweet Scent","Whirlwind","Magical Leaf"]},
+     {group:"A",name:"Bonsly",gender:"♂",level:30,steps:6000,weight:25,moves:["Mimic","Block","Feint Attack","Rock Tomb"]},
+     {group:"B",name:"Tangela",gender:"♀",level:30,steps:1000,weight:80,moves:["Vine Whip","Bind","Mega Drain","Stun Spore"]},
+     {group:"B",name:"Bibarel",gender:"♀",level:30,steps:1000,weight:80,moves:["Water Gun","Headbutt","Hyper Fang","Yawn"]},
+     {group:"C",name:"Mareep",gender:"♂",level:19,steps:0,weight:100,moves:["Growl","Thunder Shock","Thunder Wave","Cotton Spore"]},
+     {group:"C",name:"Exeggcute",gender:"♀",level:17,steps:0,weight:100,moves:["Hypnosis","Reflect","Leech Seed","Bullet Seed"]}
    ],
    items:[
      {name:"Silverpowder",steps:8000,weight:5},{name:"Sharp Beak",steps:5000,weight:10},
@@ -464,12 +464,12 @@ const ROUTES = [
    desc:"Um lago oculto em névoa branca. Isso dá uma sensação muito misteriosa ao local!",
    types:["Grass","Dragon","Psychic"],
    pokemon:[
-     {group:"A",name:"Relicanth",gender:"♂",level:20,steps:9000,weight:10},
-     {group:"A",name:"Lapras",gender:"♀",level:18,steps:7000,weight:20},
-     {group:"B",name:"Golduck",gender:"♂",level:14,steps:3000,weight:60},
-     {group:"B",name:"Slowpoke",gender:"♀",level:12,steps:2000,weight:80},
-     {group:"C",name:"Marill",gender:"♀",level:10,steps:0,weight:100},
-     {group:"C",name:"Psyduck",gender:"♂",level:10,steps:0,weight:100}
+     {group:"A",name:"Chingling",gender:"♂",level:22,steps:9000,weight:10,moves:["Astonish","Recover","Uproar","Last Resort"]},
+     {group:"A",name:"Misdreavus",gender:"♀",level:32,steps:7000,weight:20,moves:["Destiny Bond","Psybeam","Pain Split","Payback"]},
+     {group:"B",name:"Haunter",gender:"♂",level:25,steps:3000,weight:60,moves:["Night Shade","Confuse Ray","Sucker Punch","Shadow Punch"]},
+     {group:"B",name:"Buizel",gender:"♂",level:28,steps:2000,weight:80,moves:["Pursuit","Swift","Aqua Jet","Baton Pass"]},
+     {group:"C",name:"Remoraid",gender:"♀",level:19,steps:0,weight:100,moves:["Lock-On","Psybeam","Aurora Beam","Bubble Beam"]},
+     {group:"C",name:"Chinchou",gender:"♀",level:17,steps:0,weight:100,moves:["Thunder Wave","Flail","Water Gun","Confuse Ray"]}
    ],
    items:[
      {name:"Dragon Scale",steps:9000,weight:5},{name:"Water Stone",steps:6000,weight:8},
@@ -483,12 +483,12 @@ const ROUTES = [
    desc:"Ondas fortes batem nesta praia. Como as pessoas não visitam, Pokémon raros vivem aqui!",
    types:["Rock","Ground","Steel"],
    pokemon:[
-     {group:"A",name:"Lanturn",gender:"♀",level:20,steps:9000,weight:10},
-     {group:"A",name:"Octillery",gender:"♂",level:18,steps:7000,weight:20},
-     {group:"B",name:"Krabby",gender:"♂",level:13,steps:2000,weight:75},
-     {group:"B",name:"Corsola",gender:"♀",level:12,steps:2000,weight:75},
-     {group:"C",name:"Shellder",gender:"♂",level:10,steps:0,weight:100},
-     {group:"C",name:"Staryu",gender:"-",level:10,steps:0,weight:100}
+     {group:"A",name:"Finneon",gender:"♀",level:26,steps:9000,weight:10,moves:["Rain Dance","Gust","Water Pulse","Captivate"]},
+     {group:"A",name:"Shellos",gender:"♀",level:30,steps:7000,weight:20,moves:["Mud Bomb","Mirror Coat","Rain Dance","Body Slam"]},
+     {group:"B",name:"Magikarp",gender:"♀",level:30,steps:2000,weight:75,moves:["Splash","Tackle","Flail","Bounce"]},
+     {group:"B",name:"Seel",gender:"♀",level:27,steps:2000,weight:75,moves:["Encore","Rest","Aqua Ring","Aurora Beam"]},
+     {group:"C",name:"Psyduck",gender:"♀",level:22,steps:0,weight:100,moves:["Ice Punch","Disable","Confusion","Yawn"]},
+     {group:"C",name:"Shellder",gender:"♂",level:20,steps:0,weight:100,moves:["Supersonic","Icicle Spear","Protect","Leer"]}
    ],
    items:[
      {name:"Deep Sea Tooth",steps:9000,weight:5},{name:"Water Stone",steps:6000,weight:8},
@@ -502,12 +502,12 @@ const ROUTES = [
    desc:"Uma rota divertida para passear com seu Pokéwalker. Dê um passeio e visite os muitos lugares!",
    types:["Normal","Psychic","Flying"],
    pokemon:[
-     {group:"A",name:"Blissey",gender:"♀",level:20,steps:9000,weight:10},
-     {group:"A",name:"Togekiss",gender:"♂",level:20,steps:8000,weight:15},
-     {group:"B",name:"Chansey",gender:"♀",level:15,steps:3000,weight:50},
-     {group:"B",name:"Togepi",gender:"♀",level:13,steps:2000,weight:70},
-     {group:"C",name:"Clefairy",gender:"♀",level:12,steps:0,weight:100},
-     {group:"C",name:"Jigglypuff",gender:"♀",level:12,steps:0,weight:100}
+     {group:"A",name:"Pachirisu",gender:"♀",level:33,steps:9000,weight:10,moves:["Flail","Sweet Kiss","Discharge","Super Fang"]},
+     {group:"A",name:"Pikachu",gender:"♀",level:30,steps:8000,weight:15,moves:["Double Team","Slam","Thunderbolt","Feint"]},
+     {group:"B",name:"Jigglypuff",gender:"♀",level:30,steps:3000,weight:50,moves:["Rollout","Double Slap","Rest","Body Slam"]},
+     {group:"B",name:"Clefairy",gender:"♀",level:31,steps:2000,weight:70,moves:["Wake-Up Slap","Cosmic Power","Lucky Chant","Metronome"]},
+     {group:"C",name:"Marill",gender:"♀",level:25,steps:0,weight:100,moves:["Water Gun","Rollout","Bubble Beam","Aqua Ring"]},
+     {group:"C",name:"Hoppip",gender:"♀",level:25,steps:0,weight:100,moves:["Sleep Powder","Bullet Seed","Leech Seed","Mega Drain"]}
    ],
    items:[
      {name:"Moon Stone",steps:9000,weight:5},{name:"Oval Stone",steps:6000,weight:8},
@@ -521,12 +521,12 @@ const ROUTES = [
    desc:"Você pode encontrar muitos Pokémon nesta rota. Faça uma longa caminhada e tente encontrá-los todos!",
    types:["Water","Psychic","Normal"],
    pokemon:[
-     {group:"A",name:"Dunsparce",gender:"♂",level:20,steps:8000,weight:10},
-     {group:"A",name:"Wobbuffet",gender:"♂",level:20,steps:7000,weight:20},
-     {group:"B",name:"Slowbro",gender:"♂",level:16,steps:3000,weight:50},
-     {group:"B",name:"Mr. Mime",gender:"♂",level:16,steps:3000,weight:60},
-     {group:"C",name:"Jynx",gender:"♀",level:14,steps:0,weight:100},
-     {group:"C",name:"Smoochum",gender:"♀",level:12,steps:0,weight:100}
+     {group:"A",name:"Spiritomb",gender:"♂",level:31,steps:8000,weight:10,moves:["Hypnosis","Dream Eater","Ominous Wind","Sucker Punch"]},
+     {group:"A",name:"Munchlax",gender:"♂",level:33,steps:7000,weight:20,moves:["Screech","Stockpile","Swallow","Body Slam"]},
+     {group:"B",name:"Chingling",gender:"♀",level:26,steps:3000,weight:50,moves:["Astonish","Confusion","Uproar","Last Resort"]},
+     {group:"B",name:"Feebas",gender:"♂",level:30,steps:3000,weight:60,moves:["Splash","Tackle","Flail"]},
+     {group:"C",name:"Noctowl",gender:"♀",level:30,steps:0,weight:100,moves:["Hypnosis","Reflect","Confusion","Take Down"]},
+     {group:"C",name:"Golbat",gender:"♂",level:33,steps:0,weight:100,moves:["Wing Attack","Confuse Ray","Air Cutter","Mean Look"]}
    ],
    items:[
      {name:"Twisted Spoon",steps:9000,weight:5},{name:"Leppa Berry",steps:6000,weight:10},
@@ -541,12 +541,12 @@ const ROUTES = [
    desc:"Uma rota misteriosa que fica além de um mar distante. Pokémon estranhos aparecem aqui!",
    types:["Normal","Flying","Water"],
    pokemon:[
-     {group:"A",name:"Corsola",gender:"♀",level:15,steps:4000,weight:20},
-     {group:"A",name:"Staryu",gender:"-",level:15,steps:4000,weight:40},
-     {group:"B",name:"Finneon",gender:"♀",level:10,steps:1000,weight:70},
-     {group:"B",name:"Lumineon",gender:"♀",level:15,steps:3000,weight:40},
-     {group:"C",name:"Magikarp",gender:"♂",level:8,steps:0,weight:100},
-     {group:"C",name:"Wingull",gender:"♂",level:8,steps:0,weight:100}
+     {group:"A",name:"Staryu",gender:"—",level:18,steps:4000,weight:20,moves:["Water Gun","Rapid Spin","Recover","Light Screen"]},
+     {group:"A",name:"Octillery",gender:"♀",level:19,steps:4000,weight:40,moves:["Psybeam","Aurora Beam","Bubble Beam","Signal Beam"]},
+     {group:"B",name:"Horsea",gender:"♂",level:15,steps:1000,weight:70,moves:["Smokescreen","Leer","Water Gun","Focus Energy"]},
+     {group:"B",name:"Corsola",gender:"♀",level:16,steps:3000,weight:40,moves:["Harden","Bubble","Recover","Refresh"]},
+     {group:"C",name:"Remoraid",gender:"♂",level:14,steps:0,weight:100,moves:["Water Gun","Lock-On","Psybeam","Aurora Beam"]},
+     {group:"C",name:"Chinchou",gender:"♀",level:12,steps:0,weight:100,moves:["Supersonic","Thunder Wave","Flail","Water Gun"]}
    ],
    items:[
      {name:"Water Stone",steps:6000,weight:5},{name:"Deep Sea Scale",steps:4000,weight:10},
@@ -560,12 +560,12 @@ const ROUTES = [
    desc:"Uma rota sob um céu noturno deslumbrante. Pokémon raros saem sob as estrelas!",
    types:["Psychic","Dark","Ghost"],
    pokemon:[
-     {group:"A",name:"Jirachi",gender:"-",level:30,steps:9000,weight:1},
-     {group:"A",name:"Clefairy",gender:"♀",level:15,steps:5000,weight:30},
-     {group:"B",name:"Starmie",gender:"-",level:15,steps:2000,weight:50},
-     {group:"B",name:"Clefairy",gender:"♀",level:12,steps:1000,weight:70},
-     {group:"C",name:"Cleffa",gender:"♀",level:10,steps:0,weight:100},
-     {group:"C",name:"Staryu",gender:"-",level:10,steps:0,weight:100}
+     {group:"A",name:"Clefairy",gender:"♂",level:8,steps:9000,weight:1,moves:["Pound","Encore","Sing","Moonlight"]},
+     {group:"A",name:"Jigglypuff",gender:"♂",level:10,steps:5000,weight:30,moves:["Sing","Defense Curl","Pound"]},
+     {group:"B",name:"Zubat",gender:"♂",level:9,steps:2000,weight:50,moves:["Leech Life","Supersonic","Astonish"]},
+     {group:"B",name:"Hoothoot",gender:"♀",level:6,steps:1000,weight:70,moves:["Tackle","Growl","Foresight","Hypnosis"]},
+     {group:"C",name:"Geodude",gender:"♂",level:5,steps:0,weight:100,moves:["Tackle","Defense Curl","Mud Sport"]},
+     {group:"C",name:"Onix",gender:"♀",level:5,steps:0,weight:100,moves:["Mud Sport","Tackle","Harden","Rock Throw"]}
    ],
    items:[
      {name:"Star Piece",steps:8000,weight:5},{name:"Moon Stone",steps:5000,weight:10},
@@ -579,12 +579,12 @@ const ROUTES = [
    desc:"Uma floresta banhada por um brilho dourado. Pikachu raros com movimentos especiais vivem aqui!",
    types:["Electric","Flying","Steel"],
    pokemon:[
-     {group:"A",name:"Pikachu",gender:"♂",level:12,steps:5000,weight:50},
-     {group:"A",name:"Pikachu",gender:"♀",level:12,steps:4000,weight:50},
-     {group:"B",name:"Pikachu",gender:"♂",level:10,steps:1000,weight:80},
-     {group:"B",name:"Pikachu",gender:"♀",level:10,steps:1000,weight:80},
-     {group:"C",name:"Pichu",gender:"♂",level:5,steps:0,weight:100},
-     {group:"C",name:"Pichu",gender:"♀",level:5,steps:0,weight:100}
+     {group:"A",name:"Pikachu",gender:"♂",level:15,steps:5000,weight:50,moves:["Fly","Thunder","Growl","Tail Whip"]},
+     {group:"A",name:"Pikachu",gender:"♀",level:14,steps:4000,weight:50,moves:["Surf","Thunderbolt","Thunder Wave","Quick Attack"]},
+     {group:"B",name:"Pikachu",gender:"♂",level:13,steps:1000,weight:80,moves:["Flail","Helping Hand","Shock Wave","Thunder Wave"]},
+     {group:"B",name:"Pikachu",gender:"♀",level:12,steps:1000,weight:80,moves:["Volt Tackle","Fake Out","Thunder Shock","Growl"]},
+     {group:"C",name:"Pikachu",gender:"♂",level:10,steps:0,weight:100,moves:["Thunder Shock","Growl","Tail Whip","Thunder Wave"]},
+     {group:"C",name:"Pikachu",gender:"♀",level:10,steps:0,weight:100,moves:["Thunder Shock","Growl","Tail Whip"]}
    ],
    items:[
      {name:"Thunder Stone",steps:6000,weight:5},{name:"Yellow Shard",steps:4000,weight:15},
@@ -598,12 +598,12 @@ const ROUTES = [
    desc:"Se você quer ser Campeão, deve caminhar por esta rota! Você vai encontrar Pokémon fortes!",
    types:["Fighting","Normal","Psychic"],
    pokemon:[
-     {group:"A",name:"Spinda",gender:"♂",level:15,steps:5000,weight:30},
-     {group:"A",name:"Smeargle",gender:"♂",level:15,steps:4000,weight:30},
-     {group:"B",name:"Tyrogue",gender:"♂",level:10,steps:1500,weight:70},
-     {group:"B",name:"Machop",gender:"♂",level:10,steps:1000,weight:80},
-     {group:"C",name:"Mankey",gender:"♂",level:8,steps:0,weight:100},
-     {group:"C",name:"Meditite",gender:"♀",level:8,steps:0,weight:100}
+     {group:"A",name:"Chatot",gender:"♂",level:15,steps:5000,weight:30,moves:["Peck","Growl","Mirror Move","Sing"]},
+     {group:"A",name:"Sableye",gender:"♀",level:15,steps:4000,weight:30,moves:["Foresight","Night Shade","Astonish","Fury Swipes"]},
+     {group:"B",name:"Pikachu",gender:"♀",level:10,steps:1500,weight:70,moves:["Thunder Shock","Growl","Tail Whip","Thunder Wave"]},
+     {group:"B",name:"Croagunk",gender:"♂",level:10,steps:1000,weight:80,moves:["Astonish","Mud-Slap","Poison Sting","Taunt"]},
+     {group:"C",name:"Buneary",gender:"♀",level:5,steps:0,weight:100,moves:["Splash","Pound","Defense Curl","Foresight"]},
+     {group:"C",name:"Pachirisu",gender:"♂",level:5,steps:0,weight:100,moves:["Growl","Bide","Quick Attack"]}
    ],
    items:[
      {name:"King's Rock",steps:6000,weight:5},{name:"Scope Lens",steps:4000,weight:10},
@@ -617,12 +617,12 @@ const ROUTES = [
    desc:"Uma rota cênica cheia de belas paisagens. Pokémon fofos adoram esta área relaxante!",
    types:["Normal","Flying","Psychic"],
    pokemon:[
-     {group:"A",name:"Miltank",gender:"♀",level:15,steps:5000,weight:25},
-     {group:"A",name:"Togekiss",gender:"♂",level:15,steps:5000,weight:25},
-     {group:"B",name:"Porygon",gender:"-",level:12,steps:2000,weight:50},
-     {group:"B",name:"Togepi",gender:"♀",level:10,steps:1000,weight:70},
-     {group:"C",name:"Clefairy",gender:"♀",level:8,steps:0,weight:100},
-     {group:"C",name:"Jigglypuff",gender:"♀",level:8,steps:0,weight:100}
+     {group:"A",name:"Torchic",gender:"♂",level:10,steps:5000,weight:25,moves:["Scratch","Growl","Focus Energy","Ember"]},
+     {group:"A",name:"Eevee",gender:"♂",level:10,steps:5000,weight:25,moves:["Tail Whip","Tackle","Helping Hand","Sand Attack"]},
+     {group:"B",name:"Pelipper",gender:"♂",level:15,steps:2000,weight:50,moves:["Water Sport","Wing Attack","Supersonic","Water Gun"]},
+     {group:"B",name:"Poliwhirl",gender:"♀",level:15,steps:1000,weight:70,moves:["Bubble","Hypnosis","Water Gun","Double Slap"]},
+     {group:"C",name:"Meowth",gender:"♂",level:10,steps:0,weight:100,moves:["Scratch","Growl","Bite","Fake Out"]},
+     {group:"C",name:"Pikachu",gender:"♀",level:8,steps:0,weight:100,moves:["Thunder Shock","Growl","Tail Whip","Thunder Wave"]}
    ],
    items:[
      {name:"Oval Stone",steps:7000,weight:5},{name:"Silk Scarf",steps:4000,weight:10},
@@ -636,12 +636,12 @@ const ROUTES = [
    desc:"Você pode conhecer Pokémon fofos que evoluem por amizade e encontrar itens para evoluir Pokémon!",
    types:["Water","Electric","Fighting"],
    pokemon:[
-     {group:"A",name:"Magikarp",gender:"♂",level:10,steps:5000,weight:30},
-     {group:"A",name:"Bronzor",gender:"-",level:12,steps:5000,weight:30},
-     {group:"B",name:"Munchlax",gender:"♂",level:10,steps:2000,weight:50},
-     {group:"B",name:"Horsea",gender:"♂",level:10,steps:1000,weight:80},
-     {group:"C",name:"Beldum",gender:"-",level:10,steps:0,weight:100},
-     {group:"C",name:"Horsea",gender:"♀",level:8,steps:0,weight:100}
+     {group:"A",name:"Munchlax",gender:"♂",level:5,steps:5000,weight:30,moves:["Metronome","Tackle","Defense Curl","Self-Destruct"]},
+     {group:"A",name:"Beldum",gender:"—",level:5,steps:5000,weight:30,moves:["Take Down","Zen Headbutt","Iron Head","Iron Defense"]},
+     {group:"B",name:"Horsea",gender:"♂",level:5,steps:2000,weight:50,moves:["Bubble","Smokescreen","Muddy Water"]},
+     {group:"B",name:"Duskull",gender:"♂",level:5,steps:1000,weight:80,moves:["Leer","Night Shade","Imprison"]},
+     {group:"C",name:"Magikarp",gender:"♂",level:5,steps:0,weight:100,moves:["Splash","Bounce"]},
+     {group:"C",name:"Bronzor",gender:"—",level:5,steps:0,weight:100,moves:["Tackle","Confusion","Trick Room"]}
    ],
    items:[
      {name:"PP Max",steps:8000,weight:3},{name:"Destiny Knot",steps:5000,weight:5},
@@ -655,12 +655,12 @@ const ROUTES = [
    desc:"Um prado tranquilo onde Pokémon amigáveis se reúnem. Eles adoram fazer novos amigos!",
    types:["Normal","Grass","Fairy"],
    pokemon:[
-     {group:"A",name:"Eevee",gender:"♂",level:10,steps:5000,weight:30},
-     {group:"A",name:"Eevee",gender:"♀",level:10,steps:4000,weight:30},
-     {group:"B",name:"Skitty",gender:"♀",level:8,steps:1000,weight:80},
-     {group:"B",name:"Plusle",gender:"♂",level:8,steps:1000,weight:80},
-     {group:"C",name:"Minun",gender:"♀",level:8,steps:0,weight:100},
-     {group:"C",name:"Snubbull",gender:"♀",level:8,steps:0,weight:100}
+     {group:"A",name:"Elekid",gender:"♂",level:5,steps:5000,weight:30,moves:["Quick Attack","Leer","Thunder Punch"]},
+     {group:"A",name:"Magby",gender:"♂",level:5,steps:4000,weight:30,moves:["Smog","Leer","Fire Punch"]},
+     {group:"B",name:"Smoochum",gender:"♀",level:5,steps:1000,weight:80,moves:["Pound","Lick","Ice Punch"]},
+     {group:"B",name:"Happiny",gender:"♀",level:5,steps:1000,weight:80,moves:["Pound","Charm","Copycat","Heal Bell"]},
+     {group:"C",name:"Igglybuff",gender:"♂",level:5,steps:0,weight:100,moves:["Sing","Charm","Defense Curl","Wish"]},
+     {group:"C",name:"Cleffa",gender:"♀",level:5,steps:0,weight:100,moves:["Pound","Charm","Encore","Metronome"]}
    ],
    items:[
      {name:"Soothe Bell",steps:6000,weight:5},{name:"Lum Berry",steps:4000,weight:15},
@@ -1002,54 +1002,81 @@ function getGenderRatio(name){
 }
 
 function generateCapturedPokemon(irng, tid, sid, wildPkmn, routeId){
-  // Fórmula real do Pokéwalker (validada pelo PKHeX):
-  // PID_low = byte aleatório do IRNG
-  // PID_high = TID ^ SID ^ PID_low ^ 0x8000  (garante não-shiny: sv = 0x8000 >= 8)
-  // Nature = PID % 25 (sem Quirky = índice 24)
-  // Gender ajustado pelo limiar da espécie
-  
+  // ── Fórmula EXATA do PKHeX: PokewalkerRNG.GetPID() ──────────────
+  // Fonte: PKHeX-master/PKHeX.Core/Legality/RNG/ClassicEra/Gen4/PokewalkerRNG.cs
+  // Validação: GetPokewalkerMatch em MethodFinder.cs
+  //
+  // Estrutura do PID: bits 8-23 são todos 0x00 ou todos 0xFF
+  // MSB (byte 3) = ((TID ^ SID) >> 8) ^ 0xFF  ← garante anti-shiny
+  // Depois ajusta para a nature correta (pid%25 == natureIdx)
+  // Depois ajusta para o gender correto sem mudar a nature
+
   const genderRatio = getGenderRatio(wildPkmn.name);
-  const wantFemale = wildPkmn.gender === "♀";
-  const wantMale = wildPkmn.gender === "♂";
-  const genderless = wildPkmn.gender === "-" || genderRatio === 0 || genderRatio === 255 || genderRatio === 254;
-  
-  let pidLow = (irng.next() >>> 16) & 0xFF;
-  let pid = 0, natureIdx = 0;
-  
-  // Tenta até 512 vezes para achar PID válido
-  for(let i = 0; i < 512; i++){
-    pidLow = pidLow & 0xFF;
-    // Calcula pid_high para garantir não-shiny: sv = TID^SID^PID_high^PID_low = 0x8000 >= 8
-    const pidHigh = ((tid ^ sid ^ pidLow ^ 0x8000) & 0xFFFF);
-    pid = ((pidHigh << 16) | pidLow) >>> 0;
-    
-    // Verifica gênero PRIMEIRO (para evitar conflito com nature)
-    if(!genderless){
-      const pidGenderFemale = pidLow <= genderRatio;
-      if(wantFemale && !pidGenderFemale){ pidLow = (pidLow - 1 + 256) & 0xFF; continue; }
-      if(wantMale && pidGenderFemale){ pidLow = (pidLow + 1) & 0xFF; continue; }
+  // genderless: ratio 0 (always male) ou 254 (always female) ou 255 (genderless)
+  const genderless = (genderRatio === 0 || genderRatio >= 254);
+
+  // Nature vem do IRNG % 24 (Quirky=24 impossível, logo 0–23)
+  const irngVal = (irng.next() >>> 16) % 24;
+  const natureIdx = irngVal; // 0-23, nunca 24 (Quirky)
+
+  // Determinar gender desejado
+  let gender = 2; // genderless
+  if(!genderless){
+    if(wildPkmn.gender === "♀") gender = 1;
+    else if(wildPkmn.gender === "♂") gender = 0;
+    else {
+      // gender aleatório baseado no IRNG
+      const g = irng.rand(2);
+      gender = g === 0 ? 0 : 1;
     }
-    
-    // Verifica nature (sem Quirky) — ajusta na mesma direção do gênero
-    natureIdx = pid % 25;
-    if(natureIdx === 24){
-      pidLow = wantFemale ? (pidLow - 1 + 256) & 0xFF : (pidLow + 1) & 0xFF;
-      continue;
-    }
-    break;
   }
-  
-  // IVs via LCG (independente do PID no Pokéwalker)
+
+  // ── Linha 284-311 do PokewalkerRNG.cs ───────────────────────────
+  // uint pid = ((((uint)TID16 ^ SID16) >> 8) ^ 0xFF) << 24;
+  let pid = ((((tid ^ sid) >>> 8) ^ 0xFF) << 24) >>> 0;
+
+  // pid += nature - (pid % 25);
+  pid = ((pid + natureIdx - (pid % 25)) & 0xFFFFFFFF) >>> 0;
+
+  if(!genderless){
+    // var pidGender = (pid & 0xFF) < genderRatio ? 1 : 0;
+    const pidGender = (pid & 0xFF) < genderRatio ? 1 : 0;
+    if(gender !== pidGender){
+      if(gender === 0){ // Male
+        // pid += (((genderRatio - (pid & 0xFF)) / 25) + 1) * 25;
+        pid = ((pid + (Math.floor((genderRatio - (pid & 0xFF)) / 25) + 1) * 25) & 0xFFFFFFFF) >>> 0;
+        if((natureIdx & 1) !== (pid & 1)){
+          pid = ((pid + 25) & 0xFFFFFFFF) >>> 0;
+        }
+      } else { // Female
+        // pid -= (((pid & 0xFF) - genderRatio) / 25 + 1) * 25;
+        pid = ((pid - (Math.floor(((pid & 0xFF) - genderRatio) / 25) + 1) * 25) & 0xFFFFFFFF) >>> 0;
+        if((natureIdx & 1) !== (pid & 1)){
+          pid = ((pid - 25) & 0xFFFFFFFF) >>> 0;
+        }
+      }
+    }
+  }
+
+  // Gender final baseado no PID gerado
+  let finalGender = "—";
+  if(!genderless){
+    finalGender = (pid & 0xFF) < genderRatio ? "♀" : "♂";
+  }
+
+  // IVs via LCG (Wondercard method — independente do PID)
   const iv1 = irng.next() >>> 0;
   const iv2 = irng.next() >>> 0;
-  
+
+  const finalNatureIdx = pid % 25; // deve == natureIdx após ajustes
+
   return {
-    name: wildPkmn.name, gender: wildPkmn.gender, level: wildPkmn.level,
+    name: wildPkmn.name, gender: finalGender, level: wildPkmn.level,
     pid: "0x" + pid.toString(16).toUpperCase().padStart(8,"0"),
     pidDec: pid,
     pidNum: pid,
     shiny: false,
-    nature: NATURES[natureIdx],
+    nature: NATURES[finalNatureIdx] || NATURES[natureIdx],
     ability: getAbility(wildPkmn.name, pid),
     ivs: {hp:(iv1>>0)&31,atk:(iv1>>5)&31,def:(iv1>>10)&31,spe:(iv2>>0)&31,spa:(iv2>>5)&31,spd:(iv2>>10)&31},
     moves: getMoves(routeId, wildPkmn.group||"C"),
