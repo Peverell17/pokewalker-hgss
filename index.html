@@ -1396,7 +1396,21 @@ const SPRITE_BASE="https://raw.githubusercontent.com/PokeAPI/sprites/master/spri
 
 async function fetchPkmnId(name){
   if(!name) return null;
-  const key=name.toLowerCase().replace(/♀/g,"-f").replace(/♂/g,"-m").replace(/\./g,"").replace(/[^a-z0-9\-]/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"");
+  // Overrides para nomes com caracteres especiais que a PokeAPI trata diferente
+  const PKMN_KEY_OVERRIDE={
+    "Farfetch'd":"farfetchd",
+    "Sirfetch'd":"sirfetchd",
+    "Flabébé":"flabebe",
+    "Flabebe":"flabebe",
+  };
+  const overrideKey = PKMN_KEY_OVERRIDE[name];
+  const key = overrideKey ||
+    name.toLowerCase()
+      .replace(/♀/g,"-f").replace(/♂/g,"-m")
+      .replace(/\./g,"")
+      .replace(/[^a-z0-9\-]/g,"-")
+      .replace(/-+/g,"-")
+      .replace(/^-|-$/g,"");
   if(_pidCache[key]) return _pidCache[key];
   try{
     const lsv=localStorage.getItem("pw_spr_"+key);
@@ -1932,6 +1946,61 @@ function MenuScreen({stroll,onRadar,onDowsing,onStats,onBack,onEnd,onAddSteps,on
   );
 }
 
+// ── BushScreen — escolha do arbusto (fiel ao Pokéwalker original) ──
+function BushScreen({bush, onChoose, timeLeft}){
+  const excl = bush.excl; // "!" | "!!" | "!!!"
+  const exclColor = excl==="!!!"?"var(--gold-b)":excl==="!!"?"var(--blue)":"var(--green)";
+  const rarityLabel = excl==="!!!"?"Ultra Raro ★★★":excl==="!!"?"Raro ★★":"Comum ★";
+  const timerPct = (timeLeft/5)*100;
+  const timerColor = timeLeft<=2?"var(--red)":timeLeft<=3?"var(--gold-b)":"var(--green)";
+  return (
+    <div style={{animation:"slideUp .2s"}}>
+      <TBar t="POKÉ RADAR"/>
+      {/* Timer bar */}
+      <div style={{marginBottom:"16px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",fontSize:"11px",color:"var(--text3)",fontWeight:"800",marginBottom:"4px"}}>
+          <span>Toque no arbusto certo!</span>
+          <span style={{color:timerColor,fontWeight:"900"}}>{timeLeft}s</span>
+        </div>
+        <div style={{height:"6px",background:"var(--surface)",borderRadius:"3px",overflow:"hidden",border:"1px solid var(--border)"}}>
+          <div style={{height:"100%",width:timerPct+"%",background:timerColor,borderRadius:"3px",transition:"width 1s linear"}}/>
+        </div>
+      </div>
+      {/* Raridade detectada */}
+      <div style={{textAlign:"center",marginBottom:"16px"}}>
+        <div style={{fontSize:"13px",color:"var(--text3)",fontWeight:"700",marginBottom:"4px"}}>Sinal detectado</div>
+        <div style={{fontSize:"28px",fontWeight:"900",color:exclColor,letterSpacing:"4px",fontFamily:"var(--font-px)"}}>{excl}</div>
+        <div style={{fontSize:"11px",color:exclColor,fontWeight:"800",marginTop:"2px"}}>{rarityLabel}</div>
+      </div>
+      {/* 4 arbustos em grid 2x2 */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px",marginBottom:"16px"}}>
+        {bush.positions.map((hasExcl,i)=>(
+          <button key={i} onClick={()=>onChoose(i)}
+            style={{
+              padding:"28px 0",fontSize:"32px",borderRadius:"14px",
+              background:hasExcl?"rgba(48,160,96,.08)":"var(--card)",
+              border:"2px solid var(--border)",
+              cursor:"pointer",WebkitTapHighlightColor:"transparent",
+              transition:"transform .1s",
+              display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:"6px",
+            }}
+            onTouchStart={e=>e.currentTarget.style.transform="scale(.95)"}
+            onTouchEnd={e=>e.currentTarget.style.transform="scale(1)"}
+          >
+            <span>🌿</span>
+            {hasExcl && (
+              <span style={{fontSize:"14px",fontWeight:"900",color:exclColor,letterSpacing:"2px",fontFamily:"var(--font-px)"}}>{excl}</span>
+            )}
+          </button>
+        ))}
+      </div>
+      <div style={{textAlign:"center",fontSize:"11px",color:"var(--text3)",fontWeight:"700"}}>
+        Se demorar ou errar, o Pokémon vai fugir!
+      </div>
+    </div>
+  );
+}
+
 function RadarScreen({combat,onAction,onBack}){
   const {wild,playerHP,wildHP,log,over,result}=combat;
   const catchHint=wildHP>=3?"Baixa":wildHP===2?"Média":"Alta";
@@ -2145,6 +2214,34 @@ function StatsScreen({pw,stroll,onBack,onToggleNat,onReset,onResetConfirm,onRese
         <SR label="Pokémon capturados" v={(pw.sessions||[]).reduce((acc,s)=>acc+(s.capturedPokemon?s.capturedPokemon.length:0),0)} c="var(--purple)"/>
         <SR label="Pokédex Nacional" v={pw.hasNationalDex?"✓ Obtida":"✗ Não obtida"} c={pw.hasNationalDex?"var(--green)":"var(--text3)"}/>
       </div>
+
+      {/* Histórico 7 dias */}
+      {(pw.sevenDay||[]).some(v=>v>0) && (
+        <div className="card" style={{padding:"14px",marginBottom:"14px"}}>
+          <div style={{fontSize:"11px",color:"var(--text3)",fontWeight:"800",textTransform:"uppercase",letterSpacing:"1px",marginBottom:"12px"}}>Passos — Últimos 7 Dias</div>
+          {(()=>{
+            const days = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+            const data = pw.sevenDay||[0,0,0,0,0,0,0];
+            const maxVal = Math.max(...data, 1);
+            const todayIdx = new Date().getDay();
+            return (
+              <div style={{display:"flex",alignItems:"flex-end",gap:"6px",height:"80px"}}>
+                {data.map((v,i)=>{
+                  const isToday = i===todayIdx;
+                  const pct = Math.round((v/maxVal)*100);
+                  return (
+                    <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:"3px",height:"100%",justifyContent:"flex-end"}}>
+                      <div style={{fontSize:"9px",color:"var(--text3)",fontWeight:"700"}}>{v>0?v>=1000?(v/1000).toFixed(1)+"k":v:""}</div>
+                      <div style={{width:"100%",background:isToday?"var(--gold)":"var(--blue)",borderRadius:"3px 3px 0 0",height:Math.max(pct,v>0?8:2)+"%",opacity:isToday?1:0.6,transition:"height .3s"}}/>
+                      <div style={{fontSize:"9px",color:isToday?"var(--gold-b)":"var(--text3)",fontWeight:isToday?"900":"700"}}>{days[i]}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
+        </div>
+      )}
       {/* Actions */}
       <div style={{display:"flex",flexDirection:"column",gap:"10px",marginBottom:"14px"}}>
         <button className="btn btn-s" onClick={onToggleNat}>{pw.hasNationalDex?"🔄 Remover Pokédex Nacional":"🔓 Marcar Pokédex Nacional"}</button>
@@ -2409,6 +2506,8 @@ function Pokewalker(){
     return null;
   });
   const [combat, setCombat] = useState(null);
+  const [bush, setBush] = useState(null);
+  const [bushTimer, setBushTimer] = useState(5);
   const [dowsing, setDowsing] = useState(null);
   const [wanderer, setWanderer] = useState(null);
   const [pendingItem, setPendingItem] = useState(null);
@@ -2424,6 +2523,15 @@ function Pokewalker(){
     document.body.classList.toggle("light", !isDark);
     try{ localStorage.setItem("pw_theme", isDark?"dark":"light"); }catch(e){}
   },[isDark]);
+
+  // Limpa cache de sprites com keys antigas incompatíveis com a PokeAPI
+  useEffect(()=>{
+    try{
+      ["nidoranf","nidoranm","farfetch-d","sirfetch-d","flab-b"].forEach(old=>{
+        if(localStorage.getItem("pw_spr_"+old)) localStorage.removeItem("pw_spr_"+old);
+      });
+    }catch(e){}
+  },[]);
 
   // Save pw whenever it changes
   useEffect(()=>{ lsSave(pw); },[pw]);
@@ -2605,20 +2713,61 @@ function Pokewalker(){
 
   // ── RADAR (combat) ────────────────────────────────────────────
   function startRadar(){
+    // 1. Deduz os watts imediatamente
     setStroll(s=>{
       if(!s||s.watts<10) return s;
       return {...s, watts:s.watts-10, wattsSpent:(s.wattsSpent||0)+10};
     });
+    // 2. Resolve o encontro e monta a tela de arbustos
     setStroll(s=>{
       if(!s) return s;
       const rng = new LCG(s.seed + s.steps + Date.now()%999983);
       const wild = resolveEncounter(s.pool, s.steps, s.typeAdv, rng);
-      if(!wild) return s; // pool vazio — não inicia batalha
-      // Armazena seed do rng, não a instância — evita problemas de serialização
-      setCombat({wild, rng, playerHP:4, wildHP:4, log:[wild.name+" apareceu!"], over:false, result:null});
+      if(!wild){
+        toast("🌿 Nenhum Pokémon por aqui... tente dar mais passos!");
+        setTimeout(()=>setScreen("menu"),100);
+        return {...s, watts:s.watts+10, wattsSpent:Math.max(0,(s.wattsSpent||0)-10)};
+      }
+      // 3. Exclamação baseada no grupo do Pokémon encontrado
+      const excl = wild.group==="A"?"!!!":wild.group==="B"?"!!":"!";
+      // 4. Posição aleatória do arbusto correto entre os 4
+      const correctIdx = new LCG(rng.s^0xCAFE).rand(4);
+      const positions = [false,false,false,false];
+      positions[correctIdx] = true;
+      setBush({wild, rng, excl, positions, correctIdx});
+      setBushTimer(5);
       return s;
     });
-    setScreen("radar");
+    setScreen("bush");
+  }
+
+  // Timer regressivo do arbusto — 5s para escolher
+  React.useEffect(()=>{
+    if(screen!=="bush"||!bush) return;
+    if(bushTimer<=0){
+      toast("⏱ Tempo esgotado! "+bush.wild.name+" fugiu...");
+      setBush(null);
+      setScreen("menu");
+      return;
+    }
+    const t = setTimeout(()=>setBushTimer(v=>v-1),1000);
+    return ()=>clearTimeout(t);
+  },[screen,bush,bushTimer]);
+
+  function chooseBushRadar(idx){
+    if(!bush) return;
+    if(idx===bush.correctIdx){
+      // Acertou → batalha
+      setCombat({wild:bush.wild, rng:bush.rng, playerHP:4, wildHP:4,
+        log:[bush.wild.name+" apareceu!"], over:false, result:null});
+      setBush(null);
+      setScreen("radar");
+    } else {
+      // Errou → foge (watts já deduzidos, sem reembolso — fiel ao original)
+      toast("🌿 "+bush.wild.name+" estava em outro arbusto e fugiu!");
+      setBush(null);
+      setScreen("menu");
+    }
   }
 
   function radarAction(action){
@@ -2702,6 +2851,7 @@ function Pokewalker(){
 
   function closeRadar(){
     setCombat(null);
+    setBush(null);
     setScreen("menu");
   }
 
@@ -2882,6 +3032,7 @@ function Pokewalker(){
       pokemon: poke.name,
       pokemonLevel: finalLevel,
       route: s.route.name,
+      routeId: s.route.id,
       steps: s.steps,
       wattsReturned: totalWattsReturned,
       wattsSpent: s.wattsSpent||0,
@@ -2892,11 +3043,17 @@ function Pokewalker(){
       foundItems: s.items,
     };
 
+    // Atualiza histórico de 7 dias — hoje = índice (dia da semana)
+    const todayIdx = new Date().getDay(); // 0=Dom, 1=Seg... 6=Sáb
+    const sevenDay = [...(pw.sevenDay||[0,0,0,0,0,0,0])];
+    sevenDay[todayIdx] = (sevenDay[todayIdx]||0) + s.steps;
+
     // Update pw
     const newPw = {
       ...pw,
       totalWatts: newTotal,
       lifetimeSteps: (pw.lifetimeSteps||0) + s.steps,
+      sevenDay,
       sessions: [sess, ...(pw.sessions||[])].slice(0,50),
       unlockedRoutes: ROUTES
         .filter(r=>!r.event && (!r.nat||pw.hasNationalDex) && newTotal>=r.watts)
@@ -2996,6 +3153,9 @@ function Pokewalker(){
             hasWanderer={!!wanderer}
           />
         )}
+        {screen==="bush" && bush && (
+          <BushScreen bush={bush} onChoose={chooseBushRadar} timeLeft={bushTimer}/>
+        )}
         {screen==="radar" && combat && (
           <RadarScreen combat={combat} onAction={radarAction} onBack={closeRadar}/>
         )}
@@ -3034,7 +3194,24 @@ function Pokewalker(){
         )}
         {screen==="result" && result && (
           <ResultScreen
-            result={{...result, onNew:()=>{ setResult(null); setSetup({...BLANK,route:"refreshing_field"}); setScreen("setup"); }}}
+            result={{...result, onNew:()=>{
+              const s = result && result.sess;
+              // Pré-preenche com dados do último Pokémon e rota usada
+              const lastSetup = s ? {
+                ...BLANK,
+                name: s.pokemon||"",
+                level: String(s.levelAfter||1),
+                exp: String(s.expAfter||0),
+                happiness: String(s.hapAfter||70),
+                gender: setup.gender||"—",
+                type1: setup.type1||"",
+                type2: setup.type2||"",
+                route: s.routeId||setup.route||"refreshing_field",
+              } : {...BLANK, route:setup.route||"refreshing_field"};
+              setResult(null);
+              setSetup(lastSetup);
+              setScreen("setup");
+            }}}
           />
         )}
       </div>
