@@ -822,11 +822,12 @@ function selectPool(route,rng){
   return {A:g.A[rng.rand(g.A.length)], B:g.B[rng.rand(g.B.length)], C:g.C[rng.rand(g.C.length)]};
 }
 function resolveEncounter(pool,steps,typeAdv,rng){
+  if(!pool) return null;
   const mult = typeAdv ? 0.75 : 1.0;
   const r = rng.rand(100);
-  if(steps >= pool.A.steps*mult && r < pool.A.weight) return pool.A;
-  if(steps >= pool.B.steps*mult && r < pool.B.weight) return pool.B;
-  return pool.C;
+  if(pool.A && pool.A.name && steps >= (pool.A.steps||0)*mult && r < (pool.A.weight||10)) return pool.A;
+  if(pool.B && pool.B.name && steps >= (pool.B.steps||0)*mult && r < (pool.B.weight||30)) return pool.B;
+  return pool.C || pool.B || pool.A || null;
 }
 function resolveItem(route,steps,irng){
   for(const item of route.items){
@@ -1068,7 +1069,7 @@ const INIT={
   currentPokemon:null,
   trainer:{name:"",tid:0,sid:0,game:"SoulSilver",lang:"Português"},
 };
-const BLANK={name:"",level:"",exp:"",happiness:"",type1:"",type2:"",route:"refreshing_field"};
+const BLANK={name:"",level:"",exp:"",happiness:"",type1:"",type2:"",gender:"—",route:"refreshing_field"};
 
 function lsSave(data){
   try{ localStorage.setItem(LS_KEY,JSON.stringify(data)); return true; }
@@ -1084,6 +1085,70 @@ function lsLoad(){
   }catch(e){ return null; }
 }
 function lsClear(){ try{ localStorage.removeItem(LS_KEY); }catch(e){} }
+
+// ── Stroll persistence — salva/restaura o passeio em andamento ───
+const STROLL_KEY = "pw_stroll_v1";
+
+function strollSerialize(s){
+  if(!s) return null;
+  try{
+    return JSON.stringify({
+      ...s,
+      rng: s.rng ? s.rng.s : 0,    // salva só a seed
+      irng: s.irng ? s.irng.s : 0, // salva só a seed
+    });
+  }catch(e){ return null; }
+}
+
+function strollDeserialize(raw){
+  if(!raw) return null;
+  try{
+    const d = JSON.parse(raw);
+    if(!d || !d.route || !d.pokemon) return null;
+    // Recria as instâncias a partir das seeds
+    d.rng  = new LCG(d.rng  || 0);
+    d.irng = new IRNG(d.irng || 0);
+    // Recria o pool se foi perdido na serialização
+    if(!d.pool || !d.pool.A || !d.pool.B || !d.pool.C){
+      const route = ROUTES.find(r=>r.id===(d.route&&d.route.id));
+      if(route){
+        const rng = new LCG(d.seed || 0);
+        d.pool = selectPool(route, rng);
+      } else {
+        return null; // rota não encontrada, descarta
+      }
+    }
+    // Garante campos obrigatórios que podem faltar em versões antigas
+    if(!d.caught)  d.caught  = [];
+    if(!d.items)   d.items   = [];
+    if(d.wandererSeen===undefined) d.wandererSeen=false;
+    if(d.wandererFled===undefined) d.wandererFled=false;
+    if(d.wandererFledAt===undefined) d.wandererFledAt=0;
+    if(d.rareBoost===undefined) d.rareBoost=false;
+    if(d.balloonCollected===undefined) d.balloonCollected=false;
+    if(d.wattsSpent===undefined) d.wattsSpent=0;
+    if(d.typeAdv===undefined) d.typeAdv=false;
+    return d;
+  }catch(e){ return null; }
+}
+
+function strollSave(s){
+  try{
+    const ser = strollSerialize(s);
+    if(ser) localStorage.setItem(STROLL_KEY, ser);
+  }catch(e){}
+}
+
+function strollLoad(){
+  try{
+    const raw = localStorage.getItem(STROLL_KEY);
+    return strollDeserialize(raw);
+  }catch(e){ return null; }
+}
+
+function strollClear(){
+  try{ localStorage.removeItem(STROLL_KEY); }catch(e){}
+}
 
 // ── Tipo → cor do badge ─────────────────────────────────────────
 const TYPE_COLOR={
@@ -1331,7 +1396,7 @@ const SPRITE_BASE="https://raw.githubusercontent.com/PokeAPI/sprites/master/spri
 
 async function fetchPkmnId(name){
   if(!name) return null;
-  const key=name.toLowerCase().replace(/♀/g,"f").replace(/♂/g,"m").replace(/\./g,"").replace(/[^a-z0-9\-]/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"");
+  const key=name.toLowerCase().replace(/♀/g,"-f").replace(/♂/g,"-m").replace(/\./g,"").replace(/[^a-z0-9\-]/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"");
   if(_pidCache[key]) return _pidCache[key];
   try{
     const lsv=localStorage.getItem("pw_spr_"+key);
@@ -1472,6 +1537,8 @@ function SetupScreen({setup,setSetup,pw,avail,onStart,onStartWild,onStats}){
   const locked=ROUTES.filter(r=>!r.event&&!available.find(a=>a.id===r.id));
   const events=ROUTES.filter(r=>r.event);
   const canStart=!!(setup.name&&setup.level);
+  const nameKnown = setup.name.length>0 && ALL_PKM_NAMES.some(n=>n.toLowerCase()===setup.name.toLowerCase());
+  const nameUnknown = setup.name.length>0 && !nameKnown;
   const selRoute=ROUTES.find(r=>r.id===setup.route);
   const pkmTypes=[setup.type1,setup.type2].filter(Boolean).map(t=>t.trim());
   const hasAdv=!!(pkmTypes.length>0 && selRoute && selRoute.types.some(t=>pkmTypes.includes(t)));
@@ -1541,6 +1608,16 @@ function SetupScreen({setup,setSetup,pw,avail,onStart,onStartWild,onStats}){
                 ))}
               </div>
             )}
+            {nameUnknown && !showSuggestions && (
+              <div style={{fontSize:"10px",color:"var(--amber)",marginTop:"4px",fontWeight:"700",lineHeight:"1.4"}}>
+                ⚠ Pokémon não reconhecido — tipos não serão auto-detectados. Você ainda pode continuar.
+              </div>
+            )}
+            {nameKnown && (
+              <div style={{fontSize:"10px",color:"var(--green)",marginTop:"4px",fontWeight:"700"}}>
+                ✓ Pokémon reconhecido
+              </div>
+            )}
           </div>
           <div>
             <div style={{fontSize:"12px",color:"var(--text2)",marginBottom:"5px",fontWeight:"700"}}>Nível</div>
@@ -1566,6 +1643,17 @@ function SetupScreen({setup,setSetup,pw,avail,onStart,onStartWild,onStats}){
                 {parseInt(setup.happiness)>=200?"💛 Balão Grande (50W)":parseInt(setup.happiness)>=120?"💛 Balão Médio (20W)":"💛 Balão Pequeno (10W)"}
               </div>
             )}
+          </div>
+          <div>
+            <div style={{fontSize:"12px",color:"var(--text2)",marginBottom:"5px",fontWeight:"700"}}>Gênero</div>
+            <div style={{display:"flex",gap:"6px"}}>
+              {[["♂","♂"],["♀","♀"],["—","—"]].map(([label,val])=>(
+                <button key={val} className="btn" onClick={()=>f("gender",val)}
+                  style={{flex:1,padding:"10px 0",background:setup.gender===val?"var(--gold-dim)":"var(--surface)",border:"1px solid "+(setup.gender===val?"var(--gold)":"var(--border)"),borderRadius:"8px",cursor:"pointer",fontSize:"16px",fontWeight:"900",color:setup.gender===val?"var(--gold-b)":"var(--text2)",WebkitTapHighlightColor:"transparent"}}>
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -2051,8 +2139,10 @@ function StatsScreen({pw,stroll,onBack,onToggleNat,onReset,onResetConfirm,onRese
       <div className="card" style={{padding:"4px 16px",marginBottom:"14px"}}>
         <SR label="Watts acumulados" v={(pw.totalWatts||0).toLocaleString()+"W"} c="var(--gold-b)"/>
         <SR label="Passos totais" v={(pw.lifetimeSteps||0).toLocaleString()} c="var(--blue)"/>
+        <SR label="Distância total" v={(((pw.lifetimeSteps||0)*0.75)/1000).toFixed(1)+" km"} c="var(--blue)"/>
         <SR label="Rotas desbloqueadas" v={(pw.unlockedRoutes||[]).length+"/"+nonEventRoutes.length} c="var(--green)"/>
         <SR label="Passeios realizados" v={(pw.sessions||[]).length} c="var(--purple)"/>
+        <SR label="Pokémon capturados" v={(pw.sessions||[]).reduce((acc,s)=>acc+(s.capturedPokemon?s.capturedPokemon.length:0),0)} c="var(--purple)"/>
         <SR label="Pokédex Nacional" v={pw.hasNationalDex?"✓ Obtida":"✗ Não obtida"} c={pw.hasNationalDex?"var(--green)":"var(--text3)"}/>
       </div>
       {/* Actions */}
@@ -2188,7 +2278,10 @@ function ResultScreen({result}){
           <div style={{background:"var(--surface)",borderRadius:8,padding:"10px 12px",border:"1px solid var(--border)"}}>
             <div style={{fontSize:"11px",color:"var(--text3)",fontWeight:"700",textTransform:"uppercase",letterSpacing:".5px",marginBottom:"4px"}}>Watts</div>
             <div style={{fontSize:"16px",fontWeight:"900",color:"var(--gold-b)"}}>+{s.wattsReturned}W</div>
-            <div style={{fontSize:"10px",color:"var(--text3)",marginTop:"2px"}}>Total: {newTotal.toLocaleString()}W</div>
+            <div style={{fontSize:"10px",color:"var(--text3)",marginTop:"2px"}}>
+              Total: {newTotal.toLocaleString()}W
+              {s.wattsSpent>0 && <span style={{color:"var(--red)",marginLeft:6}}>−{s.wattsSpent}W gastos</span>}
+            </div>
           </div>
         </div>
 
@@ -2305,7 +2398,16 @@ function Pokewalker(){
   const [pw, setPw] = useState(()=>lsLoad()||{...INIT,trainer:{...INIT.trainer}});
   const [screen, setScreen] = useState("setup");
   const [setup, setSetup] = useState({...BLANK,route:"refreshing_field"});
-  const [stroll, setStroll] = useState(null);
+  const [stroll, setStroll] = useState(()=>{
+    // Tenta restaurar passeio em andamento ao abrir o app
+    const saved = strollLoad();
+    if(saved){
+      // Verifica se a rota ainda existe nos dados
+      const route = ROUTES.find(r=>r.id===(saved.route&&saved.route.id));
+      if(route) return {...saved, route};
+    }
+    return null;
+  });
   const [combat, setCombat] = useState(null);
   const [dowsing, setDowsing] = useState(null);
   const [wanderer, setWanderer] = useState(null);
@@ -2323,8 +2425,26 @@ function Pokewalker(){
     try{ localStorage.setItem("pw_theme", isDark?"dark":"light"); }catch(e){}
   },[isDark]);
 
-  // Save whenever pw changes
+  // Save pw whenever it changes
   useEffect(()=>{ lsSave(pw); },[pw]);
+
+  // Save stroll whenever it changes (serializa seeds, não instâncias)
+  useEffect(()=>{
+    if(stroll) strollSave(stroll);
+    else strollClear();
+  },[stroll]);
+
+  // Se restaurou passeio salvo, vai direto para a tela do passeio
+  useEffect(()=>{
+    if(stroll && screen==="setup"){
+      setScreen("home");
+      // Toast de boas-vindas ao restaurar
+      setTimeout(()=>{
+        const poke = stroll && stroll.pokemon;
+        if(poke) toast(`🔄 Passeio retomado! ${poke.name} continua na caminhada.`);
+      }, 500);
+    }
+  },[]);
 
   const toast = useCallback((msg)=>{
     const id = Date.now();
@@ -2361,7 +2481,7 @@ function Pokewalker(){
       route, pool, steps:0, watts:0, wattsFromSteps:0, wattsSpent:0, balloonWatts:0,
       seed, rng, irng, startTime:now.toISOString(),
       pokemon:{
-        name, gender:"—", level:parseInt(setup.level)||5,
+        name, gender:setup.gender||"—", level:parseInt(setup.level)||5,
         happiness,
         exp:parseInt(setup.exp)||0,
         origExp:parseInt(setup.exp)||0,
@@ -2487,12 +2607,14 @@ function Pokewalker(){
   function startRadar(){
     setStroll(s=>{
       if(!s||s.watts<10) return s;
-      return {...s, watts:s.watts-10, wattsSpent:s.wattsSpent+10};
+      return {...s, watts:s.watts-10, wattsSpent:(s.wattsSpent||0)+10};
     });
     setStroll(s=>{
       if(!s) return s;
       const rng = new LCG(s.seed + s.steps + Date.now()%999983);
       const wild = resolveEncounter(s.pool, s.steps, s.typeAdv, rng);
+      if(!wild) return s; // pool vazio — não inicia batalha
+      // Armazena seed do rng, não a instância — evita problemas de serialização
       setCombat({wild, rng, playerHP:4, wildHP:4, log:[wild.name+" apareceu!"], over:false, result:null});
       return s;
     });
@@ -2502,8 +2624,8 @@ function Pokewalker(){
   function radarAction(action){
     setCombat(c=>{
       if(!c||c.over) return c;
-      const rng = new LCG(c.rng.s + Date.now()%999983);
-      c.rng.next();
+      // Cria sempre um novo RNG a partir da seed atual — nunca muta o objeto
+      const rng = new LCG((c.rng ? c.rng.s : 0) + Date.now()%999983);
       let {playerHP, wildHP, log} = c;
       const newLog = [...log];
 
@@ -2545,15 +2667,17 @@ function Pokewalker(){
           newLog.push("Captura bem-sucedida! Wobble... Wobble... Snap!");
           // Generate captured pokemon
           const lcg2 = new IRNG(rng.s ^ 0xDEADBEEF);
-          const tid = (stroll&&stroll.pokemon&&stroll.pokemon.tid)||0;
-          const sid = (stroll&&stroll.pokemon&&stroll.pokemon.sid)||0;
           const gen = generateCapturedPokemon(lcg2, pw.trainer.tid||0, pw.trainer.sid||0, c.wild, stroll?stroll.route.id:"refreshing_field");
           gen.route = stroll?stroll.route.name:"";
-          // Add to caught
+          // Add to stroll.caught — usa função updater para garantir estado mais recente
           setStroll(s=>{
-            if(!s||s.caught.length>=3) return s;
+            if(!s) return s;
+            if(s.caught.length>=3){
+              toast("⚠ Inventário cheio! "+gen.name+" não pode ser adicionado.");
+              return s;
+            }
             const newCaught = [...s.caught, gen];
-            toast("✓ "+gen.name+" capturado!");
+            toast("✓ "+gen.name+" capturado! ("+newCaught.length+"/3)");
             return {...s, caught:newCaught};
           });
           return {...c, rng, playerHP, wildHP:0, log:newLog, over:true, result:"caught", capturedPokemon:gen};
@@ -2760,6 +2884,7 @@ function Pokewalker(){
       route: s.route.name,
       steps: s.steps,
       wattsReturned: totalWattsReturned,
+      wattsSpent: s.wattsSpent||0,
       expBefore: origExp, expAfter: finalExp,
       levelBefore: origLevel, levelAfter: finalLevel, leveledUp,
       hapBefore: poke.happiness, hapAfter: finalHap,
@@ -2827,7 +2952,7 @@ function Pokewalker(){
             </div>
           )}
           {!stroll && <span style={{fontSize:"12px",color:"var(--text3)",fontWeight:"700"}}>{(pw.totalWatts||0).toLocaleString()}W</span>}
-          <button onClick={()=>setIsDark(d=>!d)} style={{background:"var(--card2)",border:"1px solid var(--border)",borderRadius:"8px",padding:"6px 8px",cursor:"pointer",fontSize:"16px",lineHeight:1,WebkitTapHighlightColor:"transparent"}}>{isDark?"☀️":"🌙"}</button>
+          <button onClick={()=>setIsDark(d=>!d)} aria-label={isDark?"Ativar tema claro":"Ativar tema escuro"} style={{background:"var(--card2)",border:"1px solid var(--border)",borderRadius:"8px",padding:"6px 8px",cursor:"pointer",fontSize:"16px",lineHeight:1,WebkitTapHighlightColor:"transparent"}}>{isDark?"☀️":"🌙"}</button>
         </div>
       </div>
 
