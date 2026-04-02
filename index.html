@@ -12,7 +12,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="apple-mobile-web-app-title" content="Pokéwalker"/>
   <link rel="apple-touch-icon" href="icone-192.png"/>
-  <link rel="icon" href="icone-192.png"/>
+  <link rel="icon" type="image/png" href="icone-192.png">
+  <link rel="apple-touch-icon" href="icone-192.png">
   <script>
     if("serviceWorker" in navigator){
       window.addEventListener("load",()=>{
@@ -1298,12 +1299,16 @@ function selectPool(route,rng){
   route.pokemon.forEach(p=>g[p.group].push(p));
   return {A:g.A[rng.rand(g.A.length)], B:g.B[rng.rand(g.B.length)], C:g.C[rng.rand(g.C.length)]};
 }
-function resolveEncounter(pool,steps,typeAdv,rng){
+function resolveEncounter(pool,steps,typeAdv,rng,dailySteps){
   if(!pool) return null;
+  // effectiveSteps = max entre passos do passeio atual e passos acumulados no dia
+  // Isso permite que Pokémon raros (ex: Beldum com 8000+ passos) apareçam
+  // mesmo que o passeio atual tenha recomeçado, fiel ao hardware real
+  const effective = Math.max(steps, dailySteps||0);
   const mult = typeAdv ? 0.75 : 1.0;
   const r = rng.rand(100);
-  if(pool.A && pool.A.name && steps >= (pool.A.steps||0)*mult && r < (pool.A.weight||10)) return pool.A;
-  if(pool.B && pool.B.name && steps >= (pool.B.steps||0)*mult && r < (pool.B.weight||30)) return pool.B;
+  if(pool.A && pool.A.name && effective >= (pool.A.steps||0)*mult && r < (pool.A.weight||10)) return pool.A;
+  if(pool.B && pool.B.name && effective >= (pool.B.steps||0)*mult && r < (pool.B.weight||30)) return pool.B;
   return pool.C || pool.B || pool.A || null;
 }
 function resolveItem(route,steps,irng){
@@ -3003,6 +3008,7 @@ const INIT={
   hasNationalDex:false,
   sessions:[], pkmnBox:[], itemBox:[],
   sevenDay:[0,0,0,0,0,0,0],
+  dailySteps:0, dailyStepsDate:"",
   currentPokemon:null,
   trainer:{name:"",tid:0,sid:0,game:"SoulSilver",lang:"Português"},
 };
@@ -3781,11 +3787,40 @@ function HomeScreen({stroll,pw,onMenu,onBalloon,onAddSteps,hasWanderer}){
         )}
       </div>
       {/* Stats pills */}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"8px",marginBottom:"14px"}}>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"8px",marginBottom:"8px"}}>
         <Pill label="Passos" value={stroll.steps.toLocaleString()} color="var(--blue)"/>
         <Pill label="Watts" value={stroll.watts+"W"} color="var(--gold-b)" accent={stroll.watts>0}/>
         <Pill label="EXP+" value={capReached?"MAX ✓":"+"+(poke.exp-(poke.origExp||0))} color={capReached?"var(--green)":"var(--purple)"}/>
       </div>
+      {/* Daily steps progress bar */}
+      {(()=>{
+        // Passos do dia = passos salvos de passeios anteriores + passos do passeio atual
+        const todayStr = new Date().toLocaleDateString("pt-BR");
+        const savedDaily = (pw.dailyStepsDate===todayStr) ? (pw.dailySteps||0) : 0;
+        const daily = savedDaily + (stroll.steps||0);
+        const route = stroll.route;
+        const maxReq = route && route.pokemon ? Math.max(...route.pokemon.map(p=>p.steps||0)) : 0;
+        if(maxReq <= 0) return null;
+        const pct = Math.min(100, Math.round((daily/maxReq)*100));
+        const unlocked = daily >= maxReq;
+        return (
+          <div style={{background:"var(--card)",borderRadius:10,padding:"10px 12px",marginBottom:"10px",border:"1px solid var(--border)"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"5px"}}>
+              <span style={{fontSize:"11px",color:"var(--text3)",fontWeight:"800",textTransform:"uppercase",letterSpacing:".5px"}}>
+                Passos do dia
+              </span>
+              <span style={{fontSize:"11px",fontWeight:"800",color:unlocked?"var(--green)":"var(--text3)"}}>
+                {daily.toLocaleString()} / {maxReq.toLocaleString()} {unlocked?"✓":""}
+              </span>
+            </div>
+            <div style={{height:"6px",background:"var(--surface)",borderRadius:3,overflow:"hidden"}}>
+              <div style={{height:"100%",width:pct+"%",background:unlocked?"var(--green)":"var(--blue)",borderRadius:3,transition:"width .3s"}}/>
+            </div>
+            {unlocked && <div style={{fontSize:"10px",color:"var(--green)",fontWeight:"700",marginTop:"4px"}}>⭐ Pokémon raros desbloqueados!</div>}
+            {!unlocked && <div style={{fontSize:"10px",color:"var(--text3)",marginTop:"4px"}}>Acumule no dia para desbloquear Pokémon raros da rota</div>}
+          </div>
+        );
+      })()}
       {/* Rare boost banner */}
       {stroll.rareBoost && <div style={{background:"rgba(232,176,48,.12)",border:"1px solid var(--gold)",borderRadius:"10px",padding:"11px 14px",marginBottom:"12px",textAlign:"center",fontSize:"13px",fontWeight:"800",color:"var(--gold-b)"}}>⭐ Rare Boost Ativo!</div>}
       {/* Balloon */}
@@ -4130,12 +4165,15 @@ function StatsScreen({pw,stroll,onBack,onToggleNat,onReset,onResetConfirm,onRese
         ) : (
           <div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
             <div style={{display:"flex",alignItems:"center",gap:"10px"}}><span style={{fontSize:"13px",color:"var(--text2)",minWidth:"75px",fontWeight:"700"}}>Nome</span><input value={t.name} onChange={e=>fT("name",e.target.value)} placeholder="Nome do treinador"/></div>
-            <div style={{display:"flex",alignItems:"center",gap:"10px"}}><span style={{fontSize:"13px",color:"var(--text2)",minWidth:"75px",fontWeight:"700"}}>TID</span><input type="number" value={String(t.tid)} onChange={e=>fT("tid",e.target.value)} placeholder="0–65535"/></div>
-            <div style={{display:"flex",alignItems:"center",gap:"10px"}}><span style={{fontSize:"13px",color:"var(--text2)",minWidth:"75px",fontWeight:"700"}}>SID</span><input type="number" value={String(t.sid)} onChange={e=>fT("sid",e.target.value)} placeholder="0–65535"/></div>
+            <div style={{display:"flex",alignItems:"center",gap:"10px"}}><span style={{fontSize:"13px",color:"var(--text2)",minWidth:"75px",fontWeight:"700"}} title="ID do Treinador — visível no jogo">TID</span><input type="number" value={String(t.tid)} onChange={e=>fT("tid",e.target.value)} placeholder="0–65535"/></div>
+            <div style={{display:"flex",alignItems:"center",gap:"10px"}}><span style={{fontSize:"13px",color:"var(--text2)",minWidth:"75px",fontWeight:"700"}} title="ID Secreto — obtido pelo PKHeX">SID</span><input type="number" value={String(t.sid)} onChange={e=>fT("sid",e.target.value)} placeholder="0–65535"/></div>
             <div style={{display:"flex",alignItems:"center",gap:"10px"}}><span style={{fontSize:"13px",color:"var(--text2)",minWidth:"75px",fontWeight:"700"}}>Jogo</span>
               <select value={t.game} onChange={e=>fT("game",e.target.value)}>
                 <option>HeartGold</option><option>SoulSilver</option>
               </select>
+            </div>
+            <div style={{fontSize:"10px",color:"var(--text3)",marginBottom:"6px",lineHeight:"1.5"}}>
+              💡 TID e SID devem ser os valores reais do seu save para gerar PIDs válidos no PKHeX
             </div>
             <button className="btn btn-p" style={{marginTop:"4px"}} onClick={()=>{onSaveTrainer({name:t.name,tid:parseInt(t.tid)||0,sid:parseInt(t.sid)||0,game:t.game,lang:pw.trainer.lang});setEditT(false);}}>✓ Salvar Treinador</button>
           </div>
@@ -4149,6 +4187,7 @@ function StatsScreen({pw,stroll,onBack,onToggleNat,onReset,onResetConfirm,onRese
         <SR label="Rotas desbloqueadas" v={(pw.unlockedRoutes||[]).length+"/"+nonEventRoutes.length} c="var(--green)"/>
         <SR label="Passeios realizados" v={(pw.sessions||[]).length} c="var(--purple)"/>
         <SR label="Pokémon capturados" v={(pw.sessions||[]).reduce((acc,s)=>acc+(s.capturedPokemon?s.capturedPokemon.length:0),0)} c="var(--purple)"/>
+        <SR label="Passos hoje" v={(pw.dailyStepsDate===new Date().toLocaleDateString("pt-BR")?(pw.dailySteps||0):0).toLocaleString()} c="var(--blue)"/>
         <SR label="Pokédex Nacional" v={pw.hasNationalDex?"✓ Obtida":"✗ Não obtida"} c={pw.hasNationalDex?"var(--green)":"var(--text3)"}/>
       </div>
 
@@ -4668,7 +4707,7 @@ function Pokewalker(){
     setStroll(s=>{
       if(!s) return s;
       const rng = new LCG(s.seed + s.steps + Date.now()%999983);
-      const wild = resolveEncounter(s.pool, s.steps, s.typeAdv, rng);
+      const wild = resolveEncounter(s.pool, s.steps, s.typeAdv, rng, pw.dailySteps||0);
       if(!wild){
         toast("🌿 Nenhum Pokémon por aqui... tente dar mais passos!");
         setTimeout(()=>setScreen("menu"),100);
@@ -4994,12 +5033,20 @@ function Pokewalker(){
     const sevenDay = [...(pw.sevenDay||[0,0,0,0,0,0,0])];
     sevenDay[todayIdx] = (sevenDay[todayIdx]||0) + s.steps;
 
+    // Atualiza dailySteps — acumula passos do dia para desbloquear Pokémon raros
+    const todayStr = new Date().toLocaleDateString("pt-BR");
+    const prevDailyDate = pw.dailyStepsDate||"";
+    const prevDailySteps = prevDailyDate === todayStr ? (pw.dailySteps||0) : 0;
+    const newDailySteps = prevDailySteps + s.steps;
+
     // Update pw
     const newPw = {
       ...pw,
       totalWatts: newTotal,
       lifetimeSteps: (pw.lifetimeSteps||0) + s.steps,
       sevenDay,
+      dailySteps: newDailySteps,
+      dailyStepsDate: todayStr,
       sessions: [sess, ...(pw.sessions||[])].slice(0,50),
       unlockedRoutes: ROUTES
         .filter(r=>!r.event && (!r.nat||pw.hasNationalDex) && newTotal>=r.watts)
