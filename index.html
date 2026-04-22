@@ -3536,17 +3536,19 @@ const HPBar=({label,hp,max,color})=>(
   </div>
 );
 
-const MBtn=({icon,label,sub,disabled,onClick,gold})=>(
+const MBtn=({icon,label,sub,disabled,onClick,gold,title})=>(
   <button className="btn row-btn" onClick={onClick} disabled={!!disabled}
+    title={title||(label + (sub?" — "+sub:""))}
+    aria-label={label + (sub?" — "+sub:"")}
     style={{opacity:disabled?0.38:1,cursor:disabled?"not-allowed":"pointer",
       background:gold?"var(--gold-dim)":"var(--card)",
       border:gold?"1px solid var(--gold)":"1px solid var(--border)"}}>
-    <span style={{fontSize:"22px",minWidth:"32px",textAlign:"center"}}>{icon}</span>
+    <span style={{fontSize:"22px",minWidth:"32px",textAlign:"center"}} aria-hidden="true">{icon}</span>
     <div style={{flex:1}}>
       <div style={{fontSize:"15px",fontWeight:"700",color:disabled?"var(--text3)":gold?"var(--gold-b)":"var(--text)"}}>{label}</div>
       {sub && <div style={{fontSize:"12px",color:"var(--text3)",marginTop:"2px"}}>{sub}</div>}
     </div>
-    {!disabled && <span style={{color:gold?"var(--gold)":"var(--text3)",fontSize:"18px"}}>&#8250;</span>}
+    {!disabled && <span style={{color:gold?"var(--gold)":"var(--text3)",fontSize:"18px"}} aria-hidden="true">&#8250;</span>}
   </button>
 );
 
@@ -3637,7 +3639,7 @@ function SetupScreen({setup,setSetup,pw,avail,onStart,onStartWild,onStats}){
         <div style={{fontSize:"11px",color:"var(--text3)",fontWeight:"800",letterSpacing:"1px",textTransform:"uppercase",marginBottom:"12px"}}>Pokémon</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"10px"}}>
           <div style={{position:"relative"}}>
-            <div style={{fontSize:"12px",color:"var(--text2)",marginBottom:"5px",fontWeight:"700"}}>Nome</div>
+            <div style={{fontSize:"12px",color:"var(--text2)",marginBottom:"5px",fontWeight:"700"}}>Nome <span style={{color:"var(--red)"}}>*</span></div>
             <input value={setup.name}
               onChange={e=>{f("name",e.target.value);setShowSuggestions(true);}}
               onBlur={()=>setTimeout(()=>setShowSuggestions(false),150)}
@@ -3666,7 +3668,7 @@ function SetupScreen({setup,setSetup,pw,avail,onStart,onStartWild,onStats}){
             )}
           </div>
           <div>
-            <div style={{fontSize:"12px",color:"var(--text2)",marginBottom:"5px",fontWeight:"700"}}>Nível</div>
+            <div style={{fontSize:"12px",color:"var(--text2)",marginBottom:"5px",fontWeight:"700"}}>Nível <span style={{color:"var(--red)"}}>*</span></div>
             <input type="number" value={setup.level} onChange={e=>f("level",e.target.value)} placeholder="1–100"/>
           </div>
           <div>
@@ -3806,6 +3808,24 @@ function SetupScreen({setup,setSetup,pw,avail,onStart,onStartWild,onStats}){
         )}
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:"10px"}}>
+        {(()=>{
+          const t = pw && pw.trainer;
+          const configured = t && t.name && t.tid>0 && t.sid>0;
+          if(configured){
+            return (
+              <div style={{background:"rgba(48,160,96,.08)",border:"1px solid rgba(48,160,96,.4)",borderRadius:"8px",padding:"8px 12px",display:"flex",alignItems:"center",gap:"8px",fontSize:"11px"}}>
+                <span style={{color:"var(--green)",fontWeight:"800"}}>✓ Treinador configurado</span>
+                <span style={{color:"var(--text3)",fontWeight:"700"}}>· {t.name} · TID {t.tid}</span>
+              </div>
+            );
+          }
+          return (
+            <div style={{background:"rgba(224,120,32,.08)",border:"1px solid rgba(224,120,32,.4)",borderRadius:"8px",padding:"8px 12px",display:"flex",alignItems:"center",gap:"8px",fontSize:"11px"}}>
+              <span style={{color:"var(--amber)",fontWeight:"800"}}>⚠ Treinador não configurado</span>
+              <span style={{color:"var(--text3)",fontWeight:"700"}}>— PIDs não serão válidos no PKHeX</span>
+            </div>
+          );
+        })()}
         <Btn onClick={onStart} disabled={!canStart} label="▶ INICIAR PASSEIO"/>
         <button className="btn btn-s" onClick={onStartWild}
           style={{background:"rgba(40,136,120,.1)",border:"1px solid var(--teal)",color:"var(--teal)",fontWeight:"800",fontSize:"13px",padding:"12px",borderRadius:"10px",cursor:"pointer",WebkitTapHighlightColor:"transparent"}}>
@@ -3818,6 +3838,41 @@ function SetupScreen({setup,setSetup,pw,avail,onStart,onStartWild,onStats}){
       </div>
     </div>
   );
+}
+
+// Temas de fundo por rota - gradientes sutis para dar atmosfera ambiental
+// Apenas cosmético, não afeta nenhuma lógica do app
+const ROUTE_BG = {
+  "refreshing_field": {c1:"#4a7c3a", c2:"#2d5420"},
+  "hoenn_field": {c1:"#5a8c4a", c2:"#3a6430"},
+  "sinnoh_field": {c1:"#3a7c4a", c2:"#1e5030"},
+  "amity_meadow": {c1:"#7cb86a", c2:"#4a8840"},
+  "noisy_forest": {c1:"#2d5020", c2:"#152810"},
+  "big_forest": {c1:"#1e4020", c2:"#0e2010"},
+  "yellow_forest": {c1:"#a0902c", c2:"#665818"},
+  "treehouse": {c1:"#4a6828", c2:"#2a4018"},
+  "beautiful_beach": {c1:"#5a9ccc", c2:"#3a7aa4"},
+  "warm_beach": {c1:"#7cb0d4", c2:"#4a8ab0"},
+  "stormy_beach": {c1:"#4a5c7c", c2:"#2a3c5c"},
+  "blue_lake": {c1:"#3a78a8", c2:"#1e5080"},
+  "white_lake": {c1:"#5a8cb8", c2:"#385e90"},
+  "beyond_the_sea": {c1:"#2a5898", c2:"#103870"},
+  "dim_cave": {c1:"#3a3844", c2:"#1e1c28"},
+  "scary_cave": {c1:"#3c2c3c", c2:"#201020"},
+  "quiet_cave": {c1:"#44443e", c2:"#242420"},
+  "icy_mountain": {c1:"#6890b0", c2:"#486d88"},
+  "rugged_road": {c1:"#6c5a3c", c2:"#443828"},
+  "town_outskirts": {c1:"#8c7858", c2:"#5c4c34"},
+  "suburban_area": {c1:"#7a7a8c", c2:"#4c4c5e"},
+  "sightseeing": {c1:"#9a8470", c2:"#685848"},
+  "resort": {c1:"#c89c6c", c2:"#8c6840"},
+  "volcano_path": {c1:"#a84830", c2:"#701c10"},
+  "rally": {c1:"#8c6028", c2:"#583a14"},
+  "winners_path": {c1:"#b0904c", c2:"#705420"},
+  "night_skys_edge": {c1:"#2a2850", c2:"#100c28"},
+};
+function getRouteBg(routeId){
+  return ROUTE_BG[routeId] || {c1:"#3a4858", c2:"#1e2838"};
 }
 
 function HomeScreen({stroll,pw,onMenu,onBalloon,onAddSteps,hasWanderer}){
@@ -5261,7 +5316,23 @@ function Pokewalker(){
   },[]);
 
   return (
-    <div style={{maxWidth:"var(--max-w)",margin:"0 auto",padding:"0 0 60px"}}>
+    <div style={{maxWidth:"var(--max-w)",margin:"0 auto",padding:"0 0 60px",position:"relative",minHeight:"100vh"}}>
+      {/* Fundo temático da rota — cobre todas as telas durante o passeio */}
+      {stroll && stroll.route && (()=>{
+        const bg = getRouteBg(stroll.route.id);
+        return (
+          <div aria-hidden="true" style={{
+            position:"fixed",
+            top:0,left:0,right:0,bottom:0,
+            background:`linear-gradient(180deg, ${bg.c1} 0%, ${bg.c2} 50%, var(--bg) 100%)`,
+            opacity:0.35,
+            pointerEvents:"none",
+            zIndex:0,
+            transition:"background 0.6s ease"
+          }}/>
+        );
+      })()}
+      <div style={{position:"relative",zIndex:1}}>
       {/* Header */}
       <div className="gold-header" style={{position:"sticky",top:0,zIndex:100,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"0",backdropFilter:"blur(12px)"}}>
         <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
@@ -5385,6 +5456,7 @@ function Pokewalker(){
             }}}
           />
         )}
+      </div>
       </div>
     </div>
   );
